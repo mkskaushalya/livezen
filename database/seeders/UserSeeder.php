@@ -16,15 +16,26 @@ class UserSeeder extends Seeder
     {
         //admin user
         User::create([
-                'name' => 'Admin User',
-                'username' => 'admin',
-                'email' => 'admin@livezen.test',
-                'phone' => '0123456789',
-                'address' => '123 Admin St, Admin City',
-                'password' => Hash::make('12345678'),
-                'role' => 'admin',
-                'email_verified_at' => now(),
+            'name' => 'Admin User',
+            'username' => 'admin',
+            'email' => 'admin@livezen.test',
+            'phone' => '0123456789',
+            'address' => '123 Admin St, Admin City',
+            'password' => Hash::make('12345678'),
+            'role' => 'admin',
+            'email_verified_at' => now(),
         ]);
 
+        //seller user
+        User::create([
+            'name' => 'Seller User',
+            'username' => 'seller',
+            'email' => 'seller@livezen.test',
+            'phone' => '0787520742',
+            'address' => '123 Seller St, Seller City',
+            'password' => Hash::make('12345678'),
+            'role' => 'seller',
+            'email_verified_at' => now(),
+        ]);
     }
 }
