@@ -43,6 +43,57 @@ export default function Register() {
                                     className="mt-2"
                                 />
                             </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="name">Username</Label>
+                                <Input
+                                    id="username"
+                                    type="text"
+                                    required
+                                    autoFocus
+                                    tabIndex={1}
+                                    autoComplete="username"
+                                    name="username"
+                                    placeholder="Username"
+                                />
+                                <InputError
+                                    message={errors.username}
+                                    className="mt-2"
+                                />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="name">Phone</Label>
+                                <Input
+                                    id="phone"
+                                    type="text"
+                                    required
+                                    autoFocus
+                                    tabIndex={1}
+                                    autoComplete="phone"
+                                    name="phone"
+                                    placeholder="Phone"
+                                />
+                                <InputError
+                                    message={errors.phone}
+                                    className="mt-2"
+                                />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="name">Address</Label>
+                                <Input
+                                    id="address"
+                                    type="text"
+                                    required
+                                    autoFocus
+                                    tabIndex={1}
+                                    autoComplete="address"
+                                    name="address"
+                                    placeholder="Address"
+                                />
+                                <InputError
+                                    message={errors.address}
+                                    className="mt-2"
+                                />
+                            </div>
 
                             <div className="grid gap-2">
                                 <Label htmlFor="email">Email address</Label>
