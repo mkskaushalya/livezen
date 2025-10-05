@@ -44,8 +44,6 @@ export default function Dashboard() {
     const { props } = usePage<PageProps>();
     const { products, categories, tags } = props;
 
-
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Seller Dashboard" />

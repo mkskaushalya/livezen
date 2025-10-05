@@ -2,11 +2,11 @@ import NavStore from '@/components/nav-store';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { usePage, Link } from '@inertiajs/react';
-import { ShoppingBagIcon, ArrowLeftIcon } from 'lucide-react';
 import { useCart } from '@/contexts/cart-context';
-import { toast } from 'sonner';
+import { Link, usePage } from '@inertiajs/react';
+import { ArrowLeftIcon, ShoppingBagIcon } from 'lucide-react';
 import * as React from 'react';
+import { toast } from 'sonner';
 
 type Category = { id: string; name: string };
 type Tag = { id: string; name: string };
@@ -61,11 +61,14 @@ export default function ProductShow() {
     return (
         <div className="min-h-screen bg-gray-50">
             <NavStore />
-            
+
             <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                 {/* Breadcrumbs */}
                 <div className="mb-8">
-                    <Link href="/products" className="inline-flex items-center text-sm text-indigo-600 hover:text-indigo-500">
+                    <Link
+                        href="/products"
+                        className="inline-flex items-center text-sm text-indigo-600 hover:text-indigo-500"
+                    >
                         <ArrowLeftIcon className="mr-2 h-4 w-4" />
                         Back to Products
                     </Link>
@@ -116,11 +119,15 @@ export default function ProductShow() {
                                 <span className="text-sm text-gray-600">
                                     {product.stock > 0 ? (
                                         <>
-                                            <span className="font-medium text-green-600">In stock</span>
-                                            {' '}({product.stock} available)
+                                            <span className="font-medium text-green-600">
+                                                In stock
+                                            </span>{' '}
+                                            ({product.stock} available)
                                         </>
                                     ) : (
-                                        <span className="font-medium text-red-600">Out of stock</span>
+                                        <span className="font-medium text-red-600">
+                                            Out of stock
+                                        </span>
                                     )}
                                 </span>
                             </div>
@@ -129,9 +136,13 @@ export default function ProductShow() {
                         {/* Description */}
                         {product.description && (
                             <div className="mt-6">
-                                <h3 className="text-sm font-medium text-gray-900">Description</h3>
+                                <h3 className="text-sm font-medium text-gray-900">
+                                    Description
+                                </h3>
                                 <div className="mt-2 space-y-6">
-                                    <p className="text-base text-gray-900">{product.description}</p>
+                                    <p className="text-base text-gray-900">
+                                        {product.description}
+                                    </p>
                                 </div>
                             </div>
                         )}
@@ -139,7 +150,9 @@ export default function ProductShow() {
                         {/* Tags */}
                         {product.tags && product.tags.length > 0 && (
                             <div className="mt-6">
-                                <h3 className="text-sm font-medium text-gray-900">Tags</h3>
+                                <h3 className="text-sm font-medium text-gray-900">
+                                    Tags
+                                </h3>
                                 <div className="mt-2 flex flex-wrap gap-2">
                                     {product.tags.map((tag) => (
                                         <Badge key={tag.id} variant="outline">
@@ -157,26 +170,37 @@ export default function ProductShow() {
                             <div className="flex items-center space-x-4">
                                 {/* Quantity Selector */}
                                 <div className="flex items-center">
-                                    <label htmlFor="quantity" className="sr-only">
+                                    <label
+                                        htmlFor="quantity"
+                                        className="sr-only"
+                                    >
                                         Quantity
                                     </label>
-                                    <div className="flex items-center border border-gray-300 rounded-md">
+                                    <div className="flex items-center rounded-md border border-gray-300">
                                         <Button
                                             variant="ghost"
                                             size="sm"
-                                            onClick={() => handleQuantityChange(quantity - 1)}
+                                            onClick={() =>
+                                                handleQuantityChange(
+                                                    quantity - 1,
+                                                )
+                                            }
                                             disabled={quantity <= 1}
                                             className="px-3 py-1"
                                         >
                                             -
                                         </Button>
-                                        <span className="px-3 py-1 text-sm font-medium min-w-[3rem] text-center">
+                                        <span className="min-w-[3rem] px-3 py-1 text-center text-sm font-medium">
                                             {quantity}
                                         </span>
                                         <Button
                                             variant="ghost"
                                             size="sm"
-                                            onClick={() => handleQuantityChange(quantity + 1)}
+                                            onClick={() =>
+                                                handleQuantityChange(
+                                                    quantity + 1,
+                                                )
+                                            }
                                             disabled={quantity >= product.stock}
                                             className="px-3 py-1"
                                         >
@@ -187,8 +211,11 @@ export default function ProductShow() {
 
                                 <Button
                                     onClick={handleAddToCart}
-                                    disabled={product.status !== 'Active' || product.stock <= 0}
-                                    className="flex-1 max-w-xs"
+                                    disabled={
+                                        product.status !== 'Active' ||
+                                        product.stock <= 0
+                                    }
+                                    className="max-w-xs flex-1"
                                     size="lg"
                                 >
                                     Add to Cart
@@ -197,7 +224,8 @@ export default function ProductShow() {
 
                             {product.stock > 0 && product.stock <= 5 && (
                                 <p className="mt-4 text-sm text-amber-600">
-                                    Only {product.stock} left in stock - order soon!
+                                    Only {product.stock} left in stock - order
+                                    soon!
                                 </p>
                             )}
                         </div>
@@ -205,9 +233,11 @@ export default function ProductShow() {
                         {/* Product Features */}
                         <div className="mt-10">
                             <div className="border-t border-gray-200 pt-10">
-                                <h3 className="text-sm font-medium text-gray-900">Highlights</h3>
+                                <h3 className="text-sm font-medium text-gray-900">
+                                    Highlights
+                                </h3>
                                 <div className="mt-4">
-                                    <ul className="list-disc list-inside space-y-2 text-sm text-gray-600">
+                                    <ul className="list-inside list-disc space-y-2 text-sm text-gray-600">
                                         <li>Fast and secure delivery</li>
                                         <li>30-day return policy</li>
                                         <li>Secure payment processing</li>
@@ -237,13 +267,18 @@ export default function ProductShow() {
                                         </div>
                                     </div>
                                     <div className="p-4">
-                                        <Link href={`/products/${relatedProduct.id}`}>
-                                            <h3 className="text-sm font-medium text-gray-900 hover:text-indigo-600 line-clamp-2">
+                                        <Link
+                                            href={`/products/${relatedProduct.id}`}
+                                        >
+                                            <h3 className="line-clamp-2 text-sm font-medium text-gray-900 hover:text-indigo-600">
                                                 {relatedProduct.name}
                                             </h3>
                                         </Link>
                                         <p className="mt-1 text-lg font-medium text-indigo-600">
-                                            LKR {Number(relatedProduct.price).toLocaleString()}
+                                            LKR{' '}
+                                            {Number(
+                                                relatedProduct.price,
+                                            ).toLocaleString()}
                                         </p>
                                     </div>
                                 </div>

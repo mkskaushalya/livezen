@@ -30,16 +30,16 @@ interface DeleteProductDialogProps {
     children?: React.ReactNode;
 }
 
-export function DeleteProductDialog({ 
-    product, 
-    children 
+export function DeleteProductDialog({
+    product,
+    children,
 }: DeleteProductDialogProps) {
     const [open, setOpen] = React.useState(false);
     const [isDeleting, setIsDeleting] = React.useState(false);
 
     const handleDelete = () => {
         setIsDeleting(true);
-        
+
         router.delete(route('products.destroy', product.id), {
             onSuccess: () => {
                 toast.success('Product deleted successfully.');
@@ -65,30 +65,38 @@ export function DeleteProductDialog({
 
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle className="text-red-600">Delete Product</DialogTitle>
+                    <DialogTitle className="text-red-600">
+                        Delete Product
+                    </DialogTitle>
                     <DialogDescription className="text-gray-600">
-                        Are you sure you want to delete this product? This action cannot be undone.
+                        Are you sure you want to delete this product? This
+                        action cannot be undone.
                     </DialogDescription>
                 </DialogHeader>
 
                 <div className="py-4">
                     <div className="space-y-2">
-                        <p className="text-sm font-medium text-gray-900">Product Details:</p>
-                        <div className="rounded-md border border-gray-200 p-3 bg-gray-50">
-                            <p className="font-semibold text-gray-900">{product.name}</p>
+                        <p className="text-sm font-medium text-gray-900">
+                            Product Details:
+                        </p>
+                        <div className="rounded-md border border-gray-200 bg-gray-50 p-3">
+                            <p className="font-semibold text-gray-900">
+                                {product.name}
+                            </p>
                             {product.category && (
                                 <p className="text-sm text-gray-600">
                                     Category: {product.category.name}
                                 </p>
                             )}
                             <p className="text-sm text-gray-600">
-                                Price: LKR {Number(product.price).toLocaleString()}
+                                Price: LKR{' '}
+                                {Number(product.price).toLocaleString()}
                             </p>
                             <p className="text-sm text-gray-600">
                                 Stock: {product.stock} units
                             </p>
                             {product.description && (
-                                <p className="text-sm text-gray-600 mt-2">
+                                <p className="mt-2 text-sm text-gray-600">
                                     Description: {product.description}
                                 </p>
                             )}

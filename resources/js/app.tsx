@@ -3,9 +3,9 @@ import '../css/app.css';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
-import { initializeTheme } from './hooks/use-appearance';
 import { Toaster } from './components/ui/sonner';
 import { CartProvider } from './contexts/cart-context';
+import { initializeTheme } from './hooks/use-appearance';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Livezen';
 
@@ -23,7 +23,7 @@ createInertiaApp({
             <CartProvider>
                 <App {...props} />
                 <Toaster />
-            </CartProvider>
+            </CartProvider>,
         );
     },
     progress: {

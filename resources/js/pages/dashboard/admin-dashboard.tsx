@@ -1,7 +1,7 @@
-import { DataTable } from '@/components/products/data-table';
-import { UsersDataTable } from '@/components/users/users-data-table';
 import { AddProductDialog } from '@/components/products/add-product-dialog';
+import { DataTable } from '@/components/products/data-table';
 import { AddUserDialog } from '@/components/users/add-user-dialog';
+import { UsersDataTable } from '@/components/users/users-data-table';
 import AppLayout from '@/layouts/app-layout';
 import admin from '@/routes/admin';
 import { type BreadcrumbItem } from '@/types';
@@ -52,9 +52,9 @@ interface PageProps {
 export default function Dashboard() {
     const { props } = usePage<PageProps>();
     const { products, categories, tags, users } = props;
-    const [activeTab, setActiveTab] = React.useState<'products' | 'users'>('products');
-
-
+    const [activeTab, setActiveTab] = React.useState<'products' | 'users'>(
+        'products',
+    );
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -64,12 +64,12 @@ export default function Dashboard() {
                     <h1 className="text-2xl font-semibold text-gray-800">
                         Admin Dashboard
                     </h1>
-                    
+
                     {/* Tab Navigation */}
                     <div className="flex space-x-1 rounded-lg bg-gray-100 p-1">
                         <button
                             onClick={() => setActiveTab('products')}
-                            className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                            className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                                 activeTab === 'products'
                                     ? 'bg-white text-gray-900 shadow-sm'
                                     : 'text-gray-600 hover:text-gray-900'
@@ -79,7 +79,7 @@ export default function Dashboard() {
                         </button>
                         <button
                             onClick={() => setActiveTab('users')}
-                            className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                            className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                                 activeTab === 'users'
                                     ? 'bg-white text-gray-900 shadow-sm'
                                     : 'text-gray-600 hover:text-gray-900'
@@ -94,11 +94,14 @@ export default function Dashboard() {
                 <div className="flex flex-1 flex-col gap-4 rounded-xl p-4">
                     {activeTab === 'products' ? (
                         <>
-                            <div className="flex justify-between items-center">
+                            <div className="flex items-center justify-between">
                                 <h2 className="text-xl font-semibold text-gray-700">
                                     Product Management
                                 </h2>
-                                <AddProductDialog categories={categories} tags={tags} />
+                                <AddProductDialog
+                                    categories={categories}
+                                    tags={tags}
+                                />
                             </div>
                             <DataTable
                                 products={products}
@@ -108,7 +111,7 @@ export default function Dashboard() {
                         </>
                     ) : (
                         <>
-                            <div className="flex justify-between items-center">
+                            <div className="flex items-center justify-between">
                                 <h2 className="text-xl font-semibold text-gray-700">
                                     User Management
                                 </h2>

@@ -13,10 +13,10 @@ class ProductController extends Controller
     {
         $products = Product::with(['category', 'tags'])->get();
         $users = \App\Models\User::all();
-        
+
         // Check if it's an admin accessing the dashboard
         $dashboardView = Auth::user()->role === 'admin' ? 'dashboard/admin-dashboard' : 'dashboard/seller-dashboard';
-        
+
         return Inertia::render($dashboardView, [
             'products' => $products,
             'categories' => \App\Models\Category::all(),

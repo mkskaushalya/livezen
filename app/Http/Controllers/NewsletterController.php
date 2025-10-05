@@ -30,10 +30,10 @@ class NewsletterController extends Controller
         try {
             // Simulate database operation
             // NewsletterSubscriber::firstOrCreate(['email' => $email]);
-            
+
             // You could also integrate with external services like:
             // - Mailchimp API
-            // - SendGrid API  
+            // - SendGrid API
             // - ConvertKit API
             // - etc.
 

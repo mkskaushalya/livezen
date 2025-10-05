@@ -38,7 +38,7 @@ export function DeleteUserDialog({ user, children }: DeleteUserDialogProps) {
 
     const handleDelete = () => {
         setIsDeleting(true);
-        
+
         router.delete(route('users.destroy', user.id), {
             onSuccess: () => {
                 toast.success('User deleted successfully.');
@@ -46,7 +46,9 @@ export function DeleteUserDialog({ user, children }: DeleteUserDialogProps) {
                 setIsDeleting(false);
             },
             onError: () => {
-                toast.error('Failed to delete user. You cannot delete your own account.');
+                toast.error(
+                    'Failed to delete user. You cannot delete your own account.',
+                );
                 setIsDeleting(false);
             },
         });
@@ -54,10 +56,14 @@ export function DeleteUserDialog({ user, children }: DeleteUserDialogProps) {
 
     const getRoleBadgeColor = (role: string) => {
         switch (role) {
-            case 'admin': return 'bg-red-100 text-red-800';
-            case 'seller': return 'bg-blue-100 text-blue-800';
-            case 'user': return 'bg-green-100 text-green-800';
-            default: return 'bg-gray-100 text-gray-800';
+            case 'admin':
+                return 'bg-red-100 text-red-800';
+            case 'seller':
+                return 'bg-blue-100 text-blue-800';
+            case 'user':
+                return 'bg-green-100 text-green-800';
+            default:
+                return 'bg-gray-100 text-gray-800';
         }
     };
 
@@ -73,20 +79,30 @@ export function DeleteUserDialog({ user, children }: DeleteUserDialogProps) {
 
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle className="text-red-600">Delete User</DialogTitle>
+                    <DialogTitle className="text-red-600">
+                        Delete User
+                    </DialogTitle>
                     <DialogDescription className="text-gray-600">
-                        Are you sure you want to delete this user? This action cannot be undone.
+                        Are you sure you want to delete this user? This action
+                        cannot be undone.
                     </DialogDescription>
                 </DialogHeader>
 
                 <div className="py-4">
                     <div className="space-y-2">
-                        <p className="text-sm font-medium text-gray-900">User Details:</p>
-                        <div className="rounded-md border border-gray-200 p-3 bg-gray-50">
-                            <div className="flex items-center justify-between mb-2">
-                                <p className="font-semibold text-gray-900">{user.name}</p>
-                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleBadgeColor(user.role)}`}>
-                                    {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                        <p className="text-sm font-medium text-gray-900">
+                            User Details:
+                        </p>
+                        <div className="rounded-md border border-gray-200 bg-gray-50 p-3">
+                            <div className="mb-2 flex items-center justify-between">
+                                <p className="font-semibold text-gray-900">
+                                    {user.name}
+                                </p>
+                                <span
+                                    className={`rounded-full px-2 py-1 text-xs font-medium ${getRoleBadgeColor(user.role)}`}
+                                >
+                                    {user.role.charAt(0).toUpperCase() +
+                                        user.role.slice(1)}
                                 </span>
                             </div>
                             <p className="text-sm text-gray-600">
@@ -101,12 +117,13 @@ export function DeleteUserDialog({ user, children }: DeleteUserDialogProps) {
                                 </p>
                             )}
                             {user.address && (
-                                <p className="text-sm text-gray-600 mt-2">
+                                <p className="mt-2 text-sm text-gray-600">
                                     Address: {user.address}
                                 </p>
                             )}
-                            <p className="text-sm text-gray-500 mt-2">
-                                Member since: {new Date(user.created_at).toLocaleDateString()}
+                            <p className="mt-2 text-sm text-gray-500">
+                                Member since:{' '}
+                                {new Date(user.created_at).toLocaleDateString()}
                             </p>
                         </div>
                     </div>

@@ -7,8 +7,8 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { EditProductDialog } from './edit-product-dialog';
 import { DeleteProductDialog } from './delete-product-dialog';
+import { EditProductDialog } from './edit-product-dialog';
 
 type Category = { id: string; name: string };
 type Tag = { id: string; name: string };
@@ -33,11 +33,7 @@ interface DataTableProps {
     tags: Tag[];
 }
 
-export function DataTable({
-    products,
-    categories,
-    tags,
-}: DataTableProps) {
+export function DataTable({ products, categories, tags }: DataTableProps) {
     return (
         <div className="rounded-xl border bg-card text-card-foreground shadow">
             <Table>

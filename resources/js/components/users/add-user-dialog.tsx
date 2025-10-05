@@ -68,7 +68,7 @@ export function AddUserDialog({ children }: AddUserDialogProps) {
                 )}
             </DialogTrigger>
 
-            <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[550px]">
                 <DialogHeader>
                     <DialogTitle>Add New User</DialogTitle>
                     <DialogDescription>
@@ -100,7 +100,9 @@ export function AddUserDialog({ children }: AddUserDialogProps) {
                         <Input
                             id="username"
                             value={data.username}
-                            onChange={(e) => setData('username', e.target.value)}
+                            onChange={(e) =>
+                                setData('username', e.target.value)
+                            }
                             placeholder="Ex: johndoe"
                             required
                         />
@@ -136,7 +138,9 @@ export function AddUserDialog({ children }: AddUserDialogProps) {
                             <Input
                                 id="phone"
                                 value={data.phone}
-                                onChange={(e) => setData('phone', e.target.value)}
+                                onChange={(e) =>
+                                    setData('phone', e.target.value)
+                                }
                                 placeholder="Ex: +1234567890"
                             />
                             {errors.phone && (
@@ -156,7 +160,9 @@ export function AddUserDialog({ children }: AddUserDialogProps) {
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="user">User</SelectItem>
-                                    <SelectItem value="seller">Seller</SelectItem>
+                                    <SelectItem value="seller">
+                                        Seller
+                                    </SelectItem>
                                     <SelectItem value="admin">Admin</SelectItem>
                                 </SelectContent>
                             </Select>
@@ -191,7 +197,9 @@ export function AddUserDialog({ children }: AddUserDialogProps) {
                             id="password"
                             type="password"
                             value={data.password}
-                            onChange={(e) => setData('password', e.target.value)}
+                            onChange={(e) =>
+                                setData('password', e.target.value)
+                            }
                             placeholder="Minimum 8 characters"
                             required
                         />
@@ -204,12 +212,16 @@ export function AddUserDialog({ children }: AddUserDialogProps) {
 
                     {/* Confirm Password */}
                     <div className="space-y-2">
-                        <Label htmlFor="password_confirmation">Confirm Password</Label>
+                        <Label htmlFor="password_confirmation">
+                            Confirm Password
+                        </Label>
                         <Input
                             id="password_confirmation"
                             type="password"
                             value={data.password_confirmation}
-                            onChange={(e) => setData('password_confirmation', e.target.value)}
+                            onChange={(e) =>
+                                setData('password_confirmation', e.target.value)
+                            }
                             placeholder="Repeat password"
                             required
                         />

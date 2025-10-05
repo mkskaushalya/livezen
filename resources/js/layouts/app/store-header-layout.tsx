@@ -1,33 +1,40 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
+import { CartSidebar } from '@/components/cart/cart-sidebar';
+import { useCart } from '@/contexts/cart-context';
+import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react';
 import {
-    Dialog,
-    DialogBackdrop,
-    DialogPanel,
-} from '@headlessui/react'
-import { Bars3Icon, MagnifyingGlassIcon, ShoppingBagIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { Link, usePage } from '@inertiajs/react'
-import { CartSidebar } from '@/components/cart/cart-sidebar'
-import { useCart } from '@/contexts/cart-context'
+    Bars3Icon,
+    MagnifyingGlassIcon,
+    ShoppingBagIcon,
+    XMarkIcon,
+} from '@heroicons/react/24/outline';
+import { Link, usePage } from '@inertiajs/react';
+import { useState } from 'react';
 
 const navigation = {
     pages: [
         { name: 'Products', href: '/products' },
         { name: 'About', href: '/about' },
     ],
-}
+};
 
 export default function Example() {
-    const [open, setOpen] = useState(false)
-    const { totalItems } = useCart()
-    const { props } = usePage<{ auth?: { user?: { name: string; email: string } } }>()
-    const user = props.auth?.user
+    const [open, setOpen] = useState(false);
+    const { totalItems } = useCart();
+    const { props } = usePage<{
+        auth?: { user?: { name: string; email: string } };
+    }>();
+    const user = props.auth?.user;
 
     return (
         <div className="bg-white">
             {/* Mobile menu */}
-            <Dialog open={open} onClose={setOpen} className="relative z-40 lg:hidden">
+            <Dialog
+                open={open}
+                onClose={setOpen}
+                className="relative z-40 lg:hidden"
+            >
                 <DialogBackdrop
                     transition
                     className="fixed inset-0 bg-black/25 transition-opacity duration-300 ease-linear data-closed:opacity-0"
@@ -45,7 +52,10 @@ export default function Example() {
                             >
                                 <span className="absolute -inset-0.5" />
                                 <span className="sr-only">Close menu</span>
-                                <XMarkIcon aria-hidden="true" className="size-6" />
+                                <XMarkIcon
+                                    aria-hidden="true"
+                                    className="size-6"
+                                />
                             </button>
                         </div>
 
@@ -53,7 +63,10 @@ export default function Example() {
                         <div className="space-y-6 border-t border-gray-200 px-4 py-6">
                             {navigation.pages.map((page) => (
                                 <div key={page.name} className="flow-root">
-                                    <Link href={page.href} className="-m-2 block p-2 font-medium text-gray-900">
+                                    <Link
+                                        href={page.href}
+                                        className="-m-2 block p-2 font-medium text-gray-900"
+                                    >
                                         {page.name}
                                     </Link>
                                 </div>
@@ -64,17 +77,27 @@ export default function Example() {
                             {user ? (
                                 <>
                                     <div className="flow-root">
-                                        <Link href="/dashboard" className="-m-2 block p-2 font-medium text-gray-900">
+                                        <Link
+                                            href="/dashboard"
+                                            className="-m-2 block p-2 font-medium text-gray-900"
+                                        >
                                             Dashboard
                                         </Link>
                                     </div>
                                     <div className="flow-root">
-                                        <Link href="/profile" className="-m-2 block p-2 font-medium text-gray-900">
+                                        <Link
+                                            href="/profile"
+                                            className="-m-2 block p-2 font-medium text-gray-900"
+                                        >
                                             Profile
                                         </Link>
                                     </div>
                                     <div className="flow-root">
-                                        <Link href="/logout" method="post" className="-m-2 block p-2 font-medium text-gray-900">
+                                        <Link
+                                            href="/logout"
+                                            method="post"
+                                            className="-m-2 block p-2 font-medium text-gray-900"
+                                        >
                                             Sign out
                                         </Link>
                                     </div>
@@ -82,12 +105,18 @@ export default function Example() {
                             ) : (
                                 <>
                                     <div className="flow-root">
-                                        <Link href="/login" className="-m-2 block p-2 font-medium text-gray-900">
+                                        <Link
+                                            href="/login"
+                                            className="-m-2 block p-2 font-medium text-gray-900"
+                                        >
                                             Sign in
                                         </Link>
                                     </div>
                                     <div className="flow-root">
-                                        <Link href="/register" className="-m-2 block p-2 font-medium text-gray-900">
+                                        <Link
+                                            href="/register"
+                                            className="-m-2 block p-2 font-medium text-gray-900"
+                                        >
                                             Create account
                                         </Link>
                                     </div>
@@ -102,8 +131,12 @@ export default function Example() {
                                     src="https://tailwindcss.com/plus-assets/img/flags/flag-canada.svg"
                                     className="block h-auto w-5 shrink-0"
                                 />
-                                <span className="ml-3 block text-base font-medium text-gray-900">CAD</span>
-                                <span className="sr-only">, change currency</span>
+                                <span className="ml-3 block text-base font-medium text-gray-900">
+                                    CAD
+                                </span>
+                                <span className="sr-only">
+                                    , change currency
+                                </span>
                             </a>
                         </div>
                     </DialogPanel>
@@ -115,7 +148,10 @@ export default function Example() {
                     Get free delivery on orders over $100
                 </p>
 
-                <nav aria-label="Top" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <nav
+                    aria-label="Top"
+                    className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
+                >
                     <div className="border-b border-gray-200">
                         <div className="flex h-16 items-center">
                             <button
@@ -125,7 +161,10 @@ export default function Example() {
                             >
                                 <span className="absolute -inset-0.5" />
                                 <span className="sr-only">Open menu</span>
-                                <Bars3Icon aria-hidden="true" className="size-6" />
+                                <Bars3Icon
+                                    aria-hidden="true"
+                                    className="size-6"
+                                />
                             </button>
 
                             {/* Logo */}
@@ -157,25 +196,50 @@ export default function Example() {
                                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
                                     {user ? (
                                         <>
-                                            <Link href="/dashboard" className="text-sm font-medium text-gray-700 hover:text-gray-800">
+                                            <Link
+                                                href="/dashboard"
+                                                className="text-sm font-medium text-gray-700 hover:text-gray-800"
+                                            >
                                                 Dashboard
                                             </Link>
-                                            <span aria-hidden="true" className="h-6 w-px bg-gray-200" />
-                                            <Link href="/profile" className="text-sm font-medium text-gray-700 hover:text-gray-800">
+                                            <span
+                                                aria-hidden="true"
+                                                className="h-6 w-px bg-gray-200"
+                                            />
+                                            <Link
+                                                href="/profile"
+                                                className="text-sm font-medium text-gray-700 hover:text-gray-800"
+                                            >
                                                 Profile
                                             </Link>
-                                            <span aria-hidden="true" className="h-6 w-px bg-gray-200" />
-                                            <Link href="/logout" method="post" className="text-sm font-medium text-gray-700 hover:text-gray-800">
+                                            <span
+                                                aria-hidden="true"
+                                                className="h-6 w-px bg-gray-200"
+                                            />
+                                            <Link
+                                                href="/logout"
+                                                method="post"
+                                                className="text-sm font-medium text-gray-700 hover:text-gray-800"
+                                            >
                                                 Sign out
                                             </Link>
                                         </>
                                     ) : (
                                         <>
-                                            <Link href="/login" className="text-sm font-medium text-gray-700 hover:text-gray-800">
+                                            <Link
+                                                href="/login"
+                                                className="text-sm font-medium text-gray-700 hover:text-gray-800"
+                                            >
                                                 Sign in
                                             </Link>
-                                            <span aria-hidden="true" className="h-6 w-px bg-gray-200" />
-                                            <Link href="/register" className="text-sm font-medium text-gray-700 hover:text-gray-800">
+                                            <span
+                                                aria-hidden="true"
+                                                className="h-6 w-px bg-gray-200"
+                                            />
+                                            <Link
+                                                href="/register"
+                                                className="text-sm font-medium text-gray-700 hover:text-gray-800"
+                                            >
                                                 Create account
                                             </Link>
                                         </>
@@ -183,22 +247,35 @@ export default function Example() {
                                 </div>
 
                                 <div className="hidden lg:ml-8 lg:flex">
-                                    <a href="#" className="flex items-center text-gray-700 hover:text-gray-800">
+                                    <a
+                                        href="#"
+                                        className="flex items-center text-gray-700 hover:text-gray-800"
+                                    >
                                         <img
                                             alt=""
                                             src="https://tailwindcss.com/plus-assets/img/flags/flag-canada.svg"
                                             className="block h-auto w-5 shrink-0"
                                         />
-                                        <span className="ml-3 block text-sm font-medium">CAD</span>
-                                        <span className="sr-only">, change currency</span>
+                                        <span className="ml-3 block text-sm font-medium">
+                                            CAD
+                                        </span>
+                                        <span className="sr-only">
+                                            , change currency
+                                        </span>
                                     </a>
                                 </div>
 
                                 {/* Search */}
                                 <div className="flex lg:ml-6">
-                                    <a href="#" className="p-2 text-gray-400 hover:text-gray-500">
+                                    <a
+                                        href="#"
+                                        className="p-2 text-gray-400 hover:text-gray-500"
+                                    >
                                         <span className="sr-only">Search</span>
-                                        <MagnifyingGlassIcon aria-hidden="true" className="size-6" />
+                                        <MagnifyingGlassIcon
+                                            aria-hidden="true"
+                                            className="size-6"
+                                        />
                                     </a>
                                 </div>
 
@@ -213,7 +290,9 @@ export default function Example() {
                                             <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
                                                 {totalItems}
                                             </span>
-                                            <span className="sr-only">items in cart, view bag</span>
+                                            <span className="sr-only">
+                                                items in cart, view bag
+                                            </span>
                                         </button>
                                     </CartSidebar>
                                 </div>
@@ -223,5 +302,5 @@ export default function Example() {
                 </nav>
             </header>
         </div>
-    )
+    );
 }

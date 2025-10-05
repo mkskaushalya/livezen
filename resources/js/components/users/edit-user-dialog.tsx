@@ -96,7 +96,7 @@ export function EditUserDialog({ user, children }: EditUserDialogProps) {
                 )}
             </DialogTrigger>
 
-            <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[550px]">
                 <DialogHeader>
                     <DialogTitle>Edit User</DialogTitle>
                     <DialogDescription>
@@ -128,7 +128,9 @@ export function EditUserDialog({ user, children }: EditUserDialogProps) {
                         <Input
                             id="username"
                             value={data.username}
-                            onChange={(e) => setData('username', e.target.value)}
+                            onChange={(e) =>
+                                setData('username', e.target.value)
+                            }
                             placeholder="Ex: johndoe"
                             required
                         />
@@ -164,7 +166,9 @@ export function EditUserDialog({ user, children }: EditUserDialogProps) {
                             <Input
                                 id="phone"
                                 value={data.phone}
-                                onChange={(e) => setData('phone', e.target.value)}
+                                onChange={(e) =>
+                                    setData('phone', e.target.value)
+                                }
                                 placeholder="Ex: +1234567890"
                             />
                             {errors.phone && (
@@ -177,14 +181,21 @@ export function EditUserDialog({ user, children }: EditUserDialogProps) {
                             <Label htmlFor="role">Role</Label>
                             <Select
                                 value={data.role}
-                                onValueChange={(val) => setData('role', val as 'admin' | 'seller' | 'user')}
+                                onValueChange={(val) =>
+                                    setData(
+                                        'role',
+                                        val as 'admin' | 'seller' | 'user',
+                                    )
+                                }
                             >
                                 <SelectTrigger id="role">
                                     <SelectValue placeholder="Select role" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="user">User</SelectItem>
-                                    <SelectItem value="seller">Seller</SelectItem>
+                                    <SelectItem value="seller">
+                                        Seller
+                                    </SelectItem>
                                     <SelectItem value="admin">Admin</SelectItem>
                                 </SelectContent>
                             </Select>
@@ -214,12 +225,16 @@ export function EditUserDialog({ user, children }: EditUserDialogProps) {
 
                     {/* Password (Optional) */}
                     <div className="space-y-2">
-                        <Label htmlFor="password">New Password (Optional)</Label>
+                        <Label htmlFor="password">
+                            New Password (Optional)
+                        </Label>
                         <Input
                             id="password"
                             type="password"
                             value={data.password}
-                            onChange={(e) => setData('password', e.target.value)}
+                            onChange={(e) =>
+                                setData('password', e.target.value)
+                            }
                             placeholder="Leave blank to keep current password"
                         />
                         {errors.password && (
@@ -232,12 +247,19 @@ export function EditUserDialog({ user, children }: EditUserDialogProps) {
                     {/* Confirm Password (Only if password is set) */}
                     {data.password && (
                         <div className="space-y-2">
-                            <Label htmlFor="password_confirmation">Confirm New Password</Label>
+                            <Label htmlFor="password_confirmation">
+                                Confirm New Password
+                            </Label>
                             <Input
                                 id="password_confirmation"
                                 type="password"
                                 value={data.password_confirmation}
-                                onChange={(e) => setData('password_confirmation', e.target.value)}
+                                onChange={(e) =>
+                                    setData(
+                                        'password_confirmation',
+                                        e.target.value,
+                                    )
+                                }
                                 placeholder="Repeat new password"
                             />
                             {errors.password_confirmation && (

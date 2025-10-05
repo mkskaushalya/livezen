@@ -2,12 +2,18 @@ import NavStore from '@/components/nav-store';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { usePage, Link, router } from '@inertiajs/react';
-import { ShoppingBagIcon, SearchIcon, FilterIcon } from 'lucide-react';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { useCart } from '@/contexts/cart-context';
-import { toast } from 'sonner';
+import { Link, router, usePage } from '@inertiajs/react';
+import { FilterIcon, SearchIcon, ShoppingBagIcon } from 'lucide-react';
 import * as React from 'react';
+import { toast } from 'sonner';
 
 type Category = { id: string; name: string; products_count?: number };
 type Tag = { id: string; name: string; products_count?: number };
@@ -52,7 +58,9 @@ export default function ProductsIndex() {
     const { addToCart } = useCart();
 
     const [searchTerm, setSearchTerm] = React.useState(filters.search || '');
-    const [selectedCategory, setSelectedCategory] = React.useState(filters.category || '');
+    const [selectedCategory, setSelectedCategory] = React.useState(
+        filters.category || '',
+    );
     const [selectedTag, setSelectedTag] = React.useState(filters.tag || '');
     const [sortBy, setSortBy] = React.useState(filters.sort || 'created_at');
     const [sortOrder, setSortOrder] = React.useState(filters.order || 'desc');
@@ -78,7 +86,9 @@ export default function ProductsIndex() {
         if (sortBy) params.set('sort', sortBy);
         if (sortOrder) params.set('order', sortOrder);
 
-        router.get('/products', Object.fromEntries(params), { preserveState: true });
+        router.get('/products', Object.fromEntries(params), {
+            preserveState: true,
+        });
     };
 
     const clearFilters = () => {
@@ -93,11 +103,13 @@ export default function ProductsIndex() {
     return (
         <div className="min-h-screen bg-gray-50">
             <NavStore />
-            
+
             <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="mb-8">
-                    <h1 className="text-3xl font-bold tracking-tight text-gray-900">Products</h1>
+                    <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+                        Products
+                    </h1>
                     <p className="mt-2 text-lg text-gray-600">
                         Discover amazing products from our trusted sellers
                     </p>
@@ -107,7 +119,7 @@ export default function ProductsIndex() {
                 <div className="mb-8 rounded-lg bg-white p-6 shadow-sm">
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="mb-2 block text-sm font-medium text-gray-700">
                                 Search
                             </label>
                             <div className="relative">
@@ -115,26 +127,37 @@ export default function ProductsIndex() {
                                     type="text"
                                     placeholder="Search products..."
                                     value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    onChange={(e) =>
+                                        setSearchTerm(e.target.value)
+                                    }
                                     className="pl-10"
                                 />
-                                <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                                <SearchIcon className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="mb-2 block text-sm font-medium text-gray-700">
                                 Category
                             </label>
-                            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                            <Select
+                                value={selectedCategory}
+                                onValueChange={setSelectedCategory}
+                            >
                                 <SelectTrigger>
                                     <SelectValue placeholder="All categories" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="">All categories</SelectItem>
+                                    <SelectItem value="">
+                                        All categories
+                                    </SelectItem>
                                     {categories.map((category) => (
-                                        <SelectItem key={category.id} value={category.id}>
-                                            {category.name} ({category.products_count})
+                                        <SelectItem
+                                            key={category.id}
+                                            value={category.id}
+                                        >
+                                            {category.name} (
+                                            {category.products_count})
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
@@ -142,10 +165,13 @@ export default function ProductsIndex() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="mb-2 block text-sm font-medium text-gray-700">
                                 Tag
                             </label>
-                            <Select value={selectedTag} onValueChange={setSelectedTag}>
+                            <Select
+                                value={selectedTag}
+                                onValueChange={setSelectedTag}
+                            >
                                 <SelectTrigger>
                                     <SelectValue placeholder="All tags" />
                                 </SelectTrigger>
@@ -161,7 +187,7 @@ export default function ProductsIndex() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="mb-2 block text-sm font-medium text-gray-700">
                                 Sort by
                             </label>
                             <Select value={sortBy} onValueChange={setSortBy}>
@@ -169,7 +195,9 @@ export default function ProductsIndex() {
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="created_at">Newest</SelectItem>
+                                    <SelectItem value="created_at">
+                                        Newest
+                                    </SelectItem>
                                     <SelectItem value="name">Name</SelectItem>
                                     <SelectItem value="price">Price</SelectItem>
                                     <SelectItem value="stock">Stock</SelectItem>
@@ -192,7 +220,8 @@ export default function ProductsIndex() {
                 {/* Results */}
                 <div className="mb-6 flex items-center justify-between">
                     <p className="text-sm text-gray-600">
-                        Showing {products.data.length} of {products.total} products
+                        Showing {products.data.length} of {products.total}{' '}
+                        products
                     </p>
                 </div>
 
@@ -211,7 +240,7 @@ export default function ProductsIndex() {
                             <div className="p-6">
                                 <div className="flex items-start justify-between">
                                     <Link href={`/products/${product.id}`}>
-                                        <h3 className="text-lg font-medium text-gray-900 hover:text-indigo-600 line-clamp-2">
+                                        <h3 className="line-clamp-2 text-lg font-medium text-gray-900 hover:text-indigo-600">
                                             {product.name}
                                         </h3>
                                     </Link>
@@ -227,7 +256,7 @@ export default function ProductsIndex() {
                                         {product.status}
                                     </Badge>
                                 </div>
-                                
+
                                 {product.category && (
                                     <p className="mt-1 text-sm text-gray-500">
                                         {product.category.name}
@@ -235,7 +264,7 @@ export default function ProductsIndex() {
                                 )}
 
                                 {product.description && (
-                                    <p className="mt-2 text-sm text-gray-600 line-clamp-2">
+                                    <p className="mt-2 line-clamp-2 text-sm text-gray-600">
                                         {product.description}
                                     </p>
                                 )}
@@ -243,7 +272,10 @@ export default function ProductsIndex() {
                                 <div className="mt-4 flex items-center justify-between">
                                     <div className="flex flex-col">
                                         <span className="text-2xl font-bold text-indigo-600">
-                                            LKR {Number(product.price).toLocaleString()}
+                                            LKR{' '}
+                                            {Number(
+                                                product.price,
+                                            ).toLocaleString()}
                                         </span>
                                         <span className="text-sm text-gray-500">
                                             {product.stock} in stock
@@ -252,7 +284,10 @@ export default function ProductsIndex() {
                                     <Button
                                         size="sm"
                                         onClick={() => handleAddToCart(product)}
-                                        disabled={product.status !== 'Active' || product.stock <= 0}
+                                        disabled={
+                                            product.status !== 'Active' ||
+                                            product.stock <= 0
+                                        }
                                     >
                                         Add to Cart
                                     </Button>
@@ -261,7 +296,11 @@ export default function ProductsIndex() {
                                 {product.tags && product.tags.length > 0 && (
                                     <div className="mt-3 flex flex-wrap gap-1">
                                         {product.tags.slice(0, 3).map((tag) => (
-                                            <Badge key={tag.id} variant="outline" className="text-xs">
+                                            <Badge
+                                                key={tag.id}
+                                                variant="outline"
+                                                className="text-xs"
+                                            >
                                                 #{tag.name}
                                             </Badge>
                                         ))}
@@ -280,17 +319,25 @@ export default function ProductsIndex() {
                                 {link.url ? (
                                     <Link
                                         href={link.url}
-                                        className={`px-3 py-2 text-sm font-medium rounded-md ${
+                                        className={`rounded-md px-3 py-2 text-sm font-medium ${
                                             link.active
                                                 ? 'bg-indigo-600 text-white'
-                                                : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                                                : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
                                         }`}
                                     >
-                                        <span dangerouslySetInnerHTML={{ __html: link.label }} />
+                                        <span
+                                            dangerouslySetInnerHTML={{
+                                                __html: link.label,
+                                            }}
+                                        />
                                     </Link>
                                 ) : (
                                     <span className="px-3 py-2 text-sm font-medium text-gray-400">
-                                        <span dangerouslySetInnerHTML={{ __html: link.label }} />
+                                        <span
+                                            dangerouslySetInnerHTML={{
+                                                __html: link.label,
+                                            }}
+                                        />
                                     </span>
                                 )}
                             </div>
@@ -301,7 +348,9 @@ export default function ProductsIndex() {
                 {products.data.length === 0 && (
                     <div className="py-16 text-center">
                         <ShoppingBagIcon className="mx-auto h-16 w-16 text-gray-300" />
-                        <h3 className="mt-4 text-lg font-medium text-gray-900">No products found</h3>
+                        <h3 className="mt-4 text-lg font-medium text-gray-900">
+                            No products found
+                        </h3>
                         <p className="mt-2 text-gray-500">
                             Try adjusting your search or filter criteria.
                         </p>

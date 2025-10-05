@@ -7,8 +7,8 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { EditUserDialog } from './edit-user-dialog';
 import { DeleteUserDialog } from './delete-user-dialog';
+import { EditUserDialog } from './edit-user-dialog';
 
 type User = {
     id: string;
@@ -29,10 +29,14 @@ interface UsersDataTableProps {
 export function UsersDataTable({ users }: UsersDataTableProps) {
     const getRoleVariant = (role: string) => {
         switch (role) {
-            case 'admin': return 'destructive';
-            case 'seller': return 'default';
-            case 'user': return 'secondary';
-            default: return 'outline';
+            case 'admin':
+                return 'destructive';
+            case 'seller':
+                return 'default';
+            case 'user':
+                return 'secondary';
+            default:
+                return 'outline';
         }
     };
 
@@ -40,7 +44,7 @@ export function UsersDataTable({ users }: UsersDataTableProps) {
         return new Date(dateString).toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'short',
-            day: 'numeric'
+            day: 'numeric',
         });
     };
 
@@ -79,14 +83,21 @@ export function UsersDataTable({ users }: UsersDataTableProps) {
                                 </TableCell>
                                 <TableCell>
                                     <Badge variant={getRoleVariant(user.role)}>
-                                        {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                                        {user.role.charAt(0).toUpperCase() +
+                                            user.role.slice(1)}
                                     </Badge>
                                 </TableCell>
                                 <TableCell>
-                                    <Badge 
-                                        variant={user.email_verified_at ? 'secondary' : 'outline'}
+                                    <Badge
+                                        variant={
+                                            user.email_verified_at
+                                                ? 'secondary'
+                                                : 'outline'
+                                        }
                                     >
-                                        {user.email_verified_at ? 'Verified' : 'Unverified'}
+                                        {user.email_verified_at
+                                            ? 'Verified'
+                                            : 'Unverified'}
                                     </Badge>
                                 </TableCell>
                                 <TableCell className="text-gray-600">
