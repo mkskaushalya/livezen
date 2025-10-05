@@ -609,10 +609,10 @@ This project is developed for **LiveZen Technologies (Pvt) Ltd** as part of an i
 
 ## 👨‍💻 Developer
 
-**Developed by**: [Your Name]  
+**Developed by**: Sahan Kaushalya  
 **Company**: LiveZen Technologies (Pvt) Ltd  
 **Project**: E-commerce Product Recommender System  
-**Date**: October 2025
+**Date**: 05 October 2025
 
 ---
 
