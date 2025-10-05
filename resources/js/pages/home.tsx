@@ -224,6 +224,9 @@ export default function Home() {
                                 key={product.id}
                                 className="group relative flex flex-col overflow-hidden rounded-lg bg-white shadow-lg transition-shadow hover:shadow-xl"
                             >
+                                <Link href={`/products/${product.id}`} className="absolute inset-0 z-10">
+                                    <span className="sr-only">View {product.name}</span>
+                                </Link>
                                 <div className="aspect-square w-full bg-gradient-to-br from-gray-100 to-gray-200 p-8">
                                     <div className="flex h-full items-center justify-center">
                                         <ShoppingBagIcon className="h-16 w-16 text-gray-400" />
@@ -267,7 +270,7 @@ export default function Home() {
                                         </div>
                                         <Button 
                                             size="sm" 
-                                            className="shrink-0"
+                                            className="shrink-0 relative z-20"
                                             onClick={() => handleAddToCart(product)}
                                             disabled={product.status !== 'Active' || product.stock <= 0}
                                         >
