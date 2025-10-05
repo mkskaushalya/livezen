@@ -17,6 +17,9 @@ Route::get('/about', function () {
     return Inertia::render('about');
 })->name('about');
 
+// Newsletter subscription
+Route::post('/newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard/user', function () {
         return Inertia::render('dashboard/user-dashboard');

@@ -1,7 +1,7 @@
 import NavStore from '@/components/nav-store';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { usePage, Link } from '@inertiajs/react';
+import { usePage, Link, useForm } from '@inertiajs/react';
 import { ShoppingBagIcon, StarIcon, TruckIcon, ShieldCheckIcon, RefreshCcwIcon } from 'lucide-react';
 import { useCart } from '@/contexts/cart-context';
 import { toast } from 'sonner';
@@ -33,8 +33,9 @@ export default function Home() {
     const { featuredProducts, topCategories } = props;
     const { addToCart } = useCart();
 
-    const [email, setEmail] = React.useState('');
-    const [isSubscribing, setIsSubscribing] = React.useState(false);
+    const newsletterForm = useForm({
+        email: '',
+    });
 
     const handleAddToCart = (product: Product) => {
         if (product.status !== 'Active') {
@@ -49,24 +50,17 @@ export default function Home() {
         toast.success(`${product.name} added to cart!`);
     };
 
-    const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    const handleNewsletterSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!email) {
-            toast.error('Please enter your email address');
-            return;
-        }
-        
-        setIsSubscribing(true);
-        try {
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            toast.success('Thank you for subscribing to our newsletter!');
-            setEmail('');
-        } catch {
-            toast.error('Failed to subscribe. Please try again.');
-        } finally {
-            setIsSubscribing(false);
-        }
+        newsletterForm.post('/newsletter/subscribe', {
+            onSuccess: () => {
+                toast.success('Thank you for subscribing to our newsletter!');
+                newsletterForm.reset();
+            },
+            onError: () => {
+                toast.error('Failed to subscribe. Please try again.');
+            },
+        });
     };
 
     const features = [
@@ -354,17 +348,17 @@ export default function Home() {
                             <input
                                 type="email"
                                 placeholder="Enter your email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                value={newsletterForm.data.email}
+                                onChange={(e) => newsletterForm.setData('email', e.target.value)}
                                 className="min-w-0 flex-auto rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-white sm:text-sm sm:leading-6"
                                 required
                             />
                             <Button 
                                 type="submit" 
                                 className="bg-white text-indigo-700 hover:bg-gray-50"
-                                disabled={isSubscribing}
+                                disabled={newsletterForm.processing}
                             >
-                                {isSubscribing ? 'Subscribing...' : 'Subscribe'}
+                                {newsletterForm.processing ? 'Subscribing...' : 'Subscribe'}
                             </Button>
                         </form>
                     </div>
