@@ -1,8 +1,10 @@
 import NavStore from '@/components/nav-store';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { usePage } from '@inertiajs/react';
+import { usePage, Link } from '@inertiajs/react';
 import { ShoppingBagIcon, StarIcon, TruckIcon, ShieldCheckIcon, RefreshCcwIcon } from 'lucide-react';
+import { useCart } from '@/contexts/cart-context';
+import { toast } from 'sonner';
 import * as React from 'react';
 
 type Category = { id: string; name: string; products_count?: number };
@@ -29,6 +31,43 @@ interface PageProps {
 export default function Home() {
     const { props } = usePage<PageProps>();
     const { featuredProducts, topCategories } = props;
+    const { addToCart } = useCart();
+
+    const [email, setEmail] = React.useState('');
+    const [isSubscribing, setIsSubscribing] = React.useState(false);
+
+    const handleAddToCart = (product: Product) => {
+        if (product.status !== 'Active') {
+            toast.error('This product is not available for purchase');
+            return;
+        }
+        if (product.stock <= 0) {
+            toast.error('This product is out of stock');
+            return;
+        }
+        addToCart(product, 1);
+        toast.success(`${product.name} added to cart!`);
+    };
+
+    const handleNewsletterSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!email) {
+            toast.error('Please enter your email address');
+            return;
+        }
+        
+        setIsSubscribing(true);
+        try {
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            toast.success('Thank you for subscribing to our newsletter!');
+            setEmail('');
+        } catch {
+            toast.error('Failed to subscribe. Please try again.');
+        } finally {
+            setIsSubscribing(false);
+        }
+    };
 
     const features = [
         {
@@ -87,12 +126,16 @@ export default function Home() {
                             Discover amazing products from trusted sellers. Shop with confidence and enjoy fast, secure delivery right to your door.
                         </p>
                         <div className="mt-10 flex items-center justify-center gap-x-6">
-                            <Button size="lg" className="bg-white text-purple-600 hover:bg-gray-50">
-                                Shop Now
-                            </Button>
-                            <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-purple-600">
-                                Learn More
-                            </Button>
+                            <Link href="/products">
+                                <Button size="lg" className="bg-white text-purple-600 hover:bg-gray-50">
+                                    Shop Now
+                                </Button>
+                            </Link>
+                            <Link href="/about">
+                                <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-purple-600">
+                                    Learn More
+                                </Button>
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -153,13 +196,15 @@ export default function Home() {
                                     <p className="mt-2 text-sm text-gray-300">
                                         {category.products_count ? `${category.products_count} products` : 'Explore category'}
                                     </p>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="mt-4 border-white text-white hover:bg-white hover:text-gray-900"
-                                    >
-                                        Browse
-                                    </Button>
+                                    <Link href={`/products?category=${category.id}`}>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="mt-4 border-white text-white hover:bg-white hover:text-gray-900"
+                                        >
+                                            Browse
+                                        </Button>
+                                    </Link>
                                 </div>
                                 <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 to-purple-600/20" />
                             </div>
@@ -226,7 +271,12 @@ export default function Home() {
                                                 {product.stock} in stock
                                             </span>
                                         </div>
-                                        <Button size="sm" className="shrink-0">
+                                        <Button 
+                                            size="sm" 
+                                            className="shrink-0"
+                                            onClick={() => handleAddToCart(product)}
+                                            disabled={product.status !== 'Active' || product.stock <= 0}
+                                        >
                                             Add to Cart
                                         </Button>
                                     </div>
@@ -244,9 +294,11 @@ export default function Home() {
                         ))}
                     </div>
                     <div className="mt-12 text-center">
-                        <Button size="lg" variant="outline">
-                            View All Products
-                        </Button>
+                        <Link href="/products">
+                            <Button size="lg" variant="outline">
+                                View All Products
+                            </Button>
+                        </Link>
                     </div>
                 </div>
             </div>
@@ -298,16 +350,23 @@ export default function Home() {
                         <p className="mx-auto mt-4 max-w-xl text-lg leading-8 text-indigo-200">
                             Subscribe to our newsletter and be the first to know about new products, special offers, and exclusive deals.
                         </p>
-                        <div className="mt-8 flex max-w-md mx-auto gap-x-4">
+                        <form onSubmit={handleNewsletterSubmit} className="mt-8 flex max-w-md mx-auto gap-x-4">
                             <input
                                 type="email"
                                 placeholder="Enter your email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                                 className="min-w-0 flex-auto rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-white sm:text-sm sm:leading-6"
+                                required
                             />
-                            <Button className="bg-white text-indigo-700 hover:bg-gray-50">
-                                Subscribe
+                            <Button 
+                                type="submit" 
+                                className="bg-white text-indigo-700 hover:bg-gray-50"
+                                disabled={isSubscribing}
+                            >
+                                {isSubscribing ? 'Subscribing...' : 'Subscribe'}
                             </Button>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>

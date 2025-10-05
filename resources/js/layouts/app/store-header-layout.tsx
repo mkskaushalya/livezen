@@ -16,6 +16,9 @@ import {
     TabPanels,
 } from '@headlessui/react'
 import { Bars3Icon, MagnifyingGlassIcon, ShoppingBagIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Link, usePage } from '@inertiajs/react'
+import { CartSidebar } from '@/components/cart/cart-sidebar'
+import { useCart } from '@/contexts/cart-context'
 
 const navigation = {
     categories: [
@@ -143,6 +146,9 @@ const navigation = {
 
 export default function Example() {
     const [open, setOpen] = useState(false)
+    const { totalItems } = useCart()
+    const { props } = usePage<{ auth?: { user?: { name: string; email: string } } }>()
+    const user = props.auth?.user
 
     return (
         <div className="bg-white">
@@ -240,16 +246,38 @@ export default function Example() {
                         </div>
 
                         <div className="space-y-6 border-t border-gray-200 px-4 py-6">
-                            <div className="flow-root">
-                                <a href="#" className="-m-2 block p-2 font-medium text-gray-900">
-                                    Sign in
-                                </a>
-                            </div>
-                            <div className="flow-root">
-                                <a href="#" className="-m-2 block p-2 font-medium text-gray-900">
-                                    Create account
-                                </a>
-                            </div>
+                            {user ? (
+                                <>
+                                    <div className="flow-root">
+                                        <Link href="/dashboard" className="-m-2 block p-2 font-medium text-gray-900">
+                                            Dashboard
+                                        </Link>
+                                    </div>
+                                    <div className="flow-root">
+                                        <Link href="/profile" className="-m-2 block p-2 font-medium text-gray-900">
+                                            Profile
+                                        </Link>
+                                    </div>
+                                    <div className="flow-root">
+                                        <Link href="/logout" method="post" className="-m-2 block p-2 font-medium text-gray-900">
+                                            Sign out
+                                        </Link>
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <div className="flow-root">
+                                        <Link href="/login" className="-m-2 block p-2 font-medium text-gray-900">
+                                            Sign in
+                                        </Link>
+                                    </div>
+                                    <div className="flow-root">
+                                        <Link href="/register" className="-m-2 block p-2 font-medium text-gray-900">
+                                            Create account
+                                        </Link>
+                                    </div>
+                                </>
+                            )}
                         </div>
 
                         <div className="border-t border-gray-200 px-4 py-6">
@@ -287,14 +315,14 @@ export default function Example() {
 
                             {/* Logo */}
                             <div className="ml-4 flex lg:ml-0">
-                                <a href="#">
-                                    <span className="sr-only">Your Company</span>
+                                <Link href="/">
+                                    <span className="sr-only">LiveZen</span>
                                     <img
                                         alt=""
                                         src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
                                         className="h-8 w-auto"
                                     />
-                                </a>
+                                </Link>
                             </div>
 
                             {/* Flyout menus */}
@@ -380,13 +408,31 @@ export default function Example() {
 
                             <div className="ml-auto flex items-center">
                                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                                    <a href="#" className="text-sm font-medium text-gray-700 hover:text-gray-800">
-                                        Sign in
-                                    </a>
-                                    <span aria-hidden="true" className="h-6 w-px bg-gray-200" />
-                                    <a href="#" className="text-sm font-medium text-gray-700 hover:text-gray-800">
-                                        Create account
-                                    </a>
+                                    {user ? (
+                                        <>
+                                            <Link href="/dashboard" className="text-sm font-medium text-gray-700 hover:text-gray-800">
+                                                Dashboard
+                                            </Link>
+                                            <span aria-hidden="true" className="h-6 w-px bg-gray-200" />
+                                            <Link href="/profile" className="text-sm font-medium text-gray-700 hover:text-gray-800">
+                                                Profile
+                                            </Link>
+                                            <span aria-hidden="true" className="h-6 w-px bg-gray-200" />
+                                            <Link href="/logout" method="post" className="text-sm font-medium text-gray-700 hover:text-gray-800">
+                                                Sign out
+                                            </Link>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Link href="/login" className="text-sm font-medium text-gray-700 hover:text-gray-800">
+                                                Sign in
+                                            </Link>
+                                            <span aria-hidden="true" className="h-6 w-px bg-gray-200" />
+                                            <Link href="/register" className="text-sm font-medium text-gray-700 hover:text-gray-800">
+                                                Create account
+                                            </Link>
+                                        </>
+                                    )}
                                 </div>
 
                                 <div className="hidden lg:ml-8 lg:flex">
@@ -411,14 +457,18 @@ export default function Example() {
 
                                 {/* Cart */}
                                 <div className="ml-4 flow-root lg:ml-6">
-                                    <a href="#" className="group -m-2 flex items-center p-2">
-                                        <ShoppingBagIcon
-                                            aria-hidden="true"
-                                            className="size-6 shrink-0 text-gray-400 group-hover:text-gray-500"
-                                        />
-                                        <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">0</span>
-                                        <span className="sr-only">items in cart, view bag</span>
-                                    </a>
+                                    <CartSidebar>
+                                        <button className="group -m-2 flex items-center p-2">
+                                            <ShoppingBagIcon
+                                                aria-hidden="true"
+                                                className="size-6 shrink-0 text-gray-400 group-hover:text-gray-500"
+                                            />
+                                            <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
+                                                {totalItems}
+                                            </span>
+                                            <span className="sr-only">items in cart, view bag</span>
+                                        </button>
+                                    </CartSidebar>
                                 </div>
                             </div>
                         </div>

@@ -5,6 +5,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { initializeTheme } from './hooks/use-appearance';
 import { Toaster } from './components/ui/sonner';
+import { CartProvider } from './contexts/cart-context';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Livezen';
 
@@ -19,10 +20,10 @@ createInertiaApp({
         const root = createRoot(el);
 
         root.render(
-            <>
+            <CartProvider>
                 <App {...props} />
                 <Toaster />
-            </>
+            </CartProvider>
         );
     },
     progress: {
