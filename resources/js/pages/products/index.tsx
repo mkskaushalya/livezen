@@ -1,4 +1,5 @@
 import NavStore from '@/components/nav-store';
+import Footer from '@/components/footer';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -360,6 +361,7 @@ export default function ProductsIndex() {
                     </div>
                 )}
             </div>
+            <Footer />
         </div>
     );
 }

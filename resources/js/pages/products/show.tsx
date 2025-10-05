@@ -1,4 +1,5 @@
 import NavStore from '@/components/nav-store';
+import Footer from '@/components/footer';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -287,6 +288,7 @@ export default function ProductShow() {
                     </div>
                 )}
             </div>
+            <Footer />
         </div>
     );
 }
