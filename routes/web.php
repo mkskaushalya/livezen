@@ -8,6 +8,15 @@ use Inertia\Inertia;
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+// Public product routes
+Route::get('/products', [App\Http\Controllers\PublicProductController::class, 'index'])->name('public.products.index');
+Route::get('/products/{product}', [App\Http\Controllers\PublicProductController::class, 'show'])->name('public.products.show');
+
+// About page
+Route::get('/about', function () {
+    return Inertia::render('about');
+})->name('about');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard/user', function () {
         return Inertia::render('dashboard/user-dashboard');
