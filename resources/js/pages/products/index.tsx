@@ -27,7 +27,7 @@ type Product = {
     stock: number;
     description?: string;
     tags?: Tag[];
-    status: 'Active' | 'Inactive' | 'Low Stock';
+    status: 'Active' | 'Low Stock' | 'Out of Stock';
 };
 
 type PaginatedProducts = {
@@ -67,13 +67,12 @@ export default function ProductsIndex() {
     const [sortOrder, setSortOrder] = React.useState(filters.order || 'desc');
 
     const handleAddToCart = (product: Product) => {
-        if (product.status !== 'Active') {
-            toast.error('This product is not available for purchase');
-            return;
-        }
-        if (product.stock <= 0) {
+        if (product.status === 'Out of Stock' || product.stock <= 0) {
             toast.error('This product is out of stock');
             return;
+        }
+        if (product.status === 'Low Stock') {
+            toast.warning(`${product.name} is low in stock! Only ${product.stock} left.`);
         }
         addToCart(product, 1);
         toast.success(`${product.name} added to cart!`);
@@ -82,8 +81,10 @@ export default function ProductsIndex() {
     const handleSearch = () => {
         const params = new URLSearchParams();
         if (searchTerm) params.set('search', searchTerm);
-        if (selectedCategory && selectedCategory !== 'all') params.set('category', selectedCategory);
-        if (selectedTag && selectedTag !== 'all') params.set('tag', selectedTag);
+        if (selectedCategory && selectedCategory !== 'all')
+            params.set('category', selectedCategory);
+        if (selectedTag && selectedTag !== 'all')
+            params.set('tag', selectedTag);
         if (sortBy) params.set('sort', sortBy);
         if (sortOrder) params.set('order', sortOrder);
 
@@ -177,7 +178,9 @@ export default function ProductsIndex() {
                                     <SelectValue placeholder="All tags" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="all">All tags</SelectItem>
+                                    <SelectItem value="all">
+                                        All tags
+                                    </SelectItem>
                                     {tags.map((tag) => (
                                         <SelectItem key={tag.id} value={tag.id}>
                                             {tag.name} ({tag.products_count})
@@ -286,7 +289,7 @@ export default function ProductsIndex() {
                                         size="sm"
                                         onClick={() => handleAddToCart(product)}
                                         disabled={
-                                            product.status !== 'Active' ||
+                                            product.status === 'Out of Stock' ||
                                             product.stock <= 0
                                         }
                                     >

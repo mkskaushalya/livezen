@@ -12,8 +12,7 @@ class PublicProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::with(['category', 'tags'])
-            ->where('status', 'Active');
+        $query = Product::with(['category', 'tags']);
 
         // Filter by category if provided
         if ($request->has('category') && $request->category) {
@@ -68,12 +67,10 @@ class PublicProductController extends Controller
     public function show($id)
     {
         $product = Product::with(['category', 'tags'])
-            ->where('status', 'Active')
             ->findOrFail($id);
 
         // Get related products from the same category
         $relatedProducts = Product::with(['category', 'tags'])
-            ->where('status', 'Active')
             ->where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
             ->limit(4)

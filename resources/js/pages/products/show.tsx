@@ -20,7 +20,7 @@ type Product = {
     stock: number;
     description?: string;
     tags?: Tag[];
-    status: 'Active' | 'Inactive' | 'Low Stock';
+    status: 'Active' | 'Low Stock' | 'Out of Stock';
 };
 
 interface PageProps {
@@ -37,17 +37,16 @@ export default function ProductShow() {
     const [quantity, setQuantity] = React.useState(1);
 
     const handleAddToCart = () => {
-        if (product.status !== 'Active') {
-            toast.error('This product is not available for purchase');
-            return;
-        }
-        if (product.stock <= 0) {
+        if (product.status === 'Out of Stock' || product.stock <= 0) {
             toast.error('This product is out of stock');
             return;
         }
         if (quantity > product.stock) {
             toast.error(`Only ${product.stock} items available in stock`);
             return;
+        }
+        if (product.status === 'Low Stock') {
+            toast.warning(`${product.name} is low in stock! Only ${product.stock} left.`);
         }
         addToCart(product, quantity);
         toast.success(`${quantity} x ${product.name} added to cart!`);
@@ -213,7 +212,7 @@ export default function ProductShow() {
                                 <Button
                                     onClick={handleAddToCart}
                                     disabled={
-                                        product.status !== 'Active' ||
+                                        product.status === 'Out of Stock' ||
                                         product.stock <= 0
                                     }
                                     className="max-w-xs flex-1"

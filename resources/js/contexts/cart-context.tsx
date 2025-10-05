@@ -8,7 +8,7 @@ type Product = {
     stock: number;
     description?: string;
     tags?: { id: string; name: string }[];
-    status: 'Active' | 'Inactive' | 'Low Stock';
+    status: 'Active' | 'Low Stock' | 'Out of Stock';
 };
 
 type CartItem = {
