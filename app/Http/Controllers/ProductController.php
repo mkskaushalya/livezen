@@ -3,19 +3,31 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class ProductController extends Controller
 {
+    use AuthorizesRequests;
     public function index()
     {
-        $products = Product::with(['category', 'tags'])->get();
+        $user = Auth::user();
+
+        // Admin can see all products, seller can only see their own products
+        if ($user->role === 'admin') {
+            $products = Product::with(['category', 'tags', 'seller'])->get();
+        } else {
+            $products = Product::with(['category', 'tags', 'seller'])
+                ->where('seller_id', $user->id)
+                ->get();
+        }
+
         $users = \App\Models\User::all();
 
         // Check if it's an admin accessing the dashboard
-        $dashboardView = Auth::user()->role === 'admin' ? 'dashboard/admin-dashboard' : 'dashboard/seller-dashboard';
+        $dashboardView = $user->role === 'admin' ? 'dashboard/admin-dashboard' : 'dashboard/seller-dashboard';
 
         return Inertia::render($dashboardView, [
             'products' => $products,
@@ -50,6 +62,9 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
+        // Check authorization
+        $this->authorize('update', $product);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
@@ -71,6 +86,9 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
+        // Check authorization
+        $this->authorize('delete', $product);
+
         $product->delete();
         return redirect()->back()->with('success', 'Product deleted.');
     }

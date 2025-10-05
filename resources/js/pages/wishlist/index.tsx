@@ -1,5 +1,5 @@
-import NavStore from '@/components/nav-store';
 import Footer from '@/components/footer';
+import NavStore from '@/components/nav-store';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/contexts/cart-context';
@@ -35,7 +35,9 @@ export default function WishlistIndex({ wishlistItems }: PageProps) {
             return;
         }
         if (product.status === 'Low Stock') {
-            toast.warning(`${product.name} is low in stock! Only ${product.stock} left.`);
+            toast.warning(
+                `${product.name} is low in stock! Only ${product.stock} left.`,
+            );
         }
         addToCart(product, 1);
         toast.success(`${product.name} added to cart!`);
@@ -47,7 +49,10 @@ export default function WishlistIndex({ wishlistItems }: PageProps) {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                    'X-CSRF-TOKEN':
+                        document
+                            .querySelector('meta[name="csrf-token"]')
+                            ?.getAttribute('content') || '',
                 },
                 body: JSON.stringify({ product_id: productId }),
             });
@@ -104,7 +109,9 @@ export default function WishlistIndex({ wishlistItems }: PageProps) {
                                 >
                                     {/* Remove from wishlist button */}
                                     <button
-                                        onClick={() => handleRemoveFromWishlist(product.id)}
+                                        onClick={() =>
+                                            handleRemoveFromWishlist(product.id)
+                                        }
                                         className="absolute top-2 right-2 z-10 rounded-full bg-white p-2 shadow-md transition-colors hover:bg-red-50 hover:text-red-600"
                                         title="Remove from wishlist"
                                     >
@@ -116,10 +123,12 @@ export default function WishlistIndex({ wishlistItems }: PageProps) {
                                             <ShoppingBagIcon className="h-16 w-16 text-gray-400" />
                                         </div>
                                     </div>
-                                    
+
                                     <div className="p-6">
                                         <div className="flex items-start justify-between">
-                                            <Link href={`/products/${product.id}`}>
+                                            <Link
+                                                href={`/products/${product.id}`}
+                                            >
                                                 <h3 className="line-clamp-2 text-lg font-medium text-gray-900 hover:text-indigo-600">
                                                     {product.name}
                                                 </h3>
@@ -128,7 +137,8 @@ export default function WishlistIndex({ wishlistItems }: PageProps) {
                                                 variant={
                                                     product.status === 'Active'
                                                         ? 'secondary'
-                                                        : product.status === 'Low Stock'
+                                                        : product.status ===
+                                                            'Low Stock'
                                                           ? 'default'
                                                           : 'destructive'
                                                 }
@@ -163,9 +173,12 @@ export default function WishlistIndex({ wishlistItems }: PageProps) {
                                             </div>
                                             <Button
                                                 size="sm"
-                                                onClick={() => handleAddToCart(product)}
+                                                onClick={() =>
+                                                    handleAddToCart(product)
+                                                }
                                                 disabled={
-                                                    product.status === 'Out of Stock' ||
+                                                    product.status ===
+                                                        'Out of Stock' ||
                                                     product.stock <= 0
                                                 }
                                             >
@@ -173,19 +186,22 @@ export default function WishlistIndex({ wishlistItems }: PageProps) {
                                             </Button>
                                         </div>
 
-                                        {product.tags && product.tags.length > 0 && (
-                                            <div className="mt-3 flex flex-wrap gap-1">
-                                                {product.tags.slice(0, 3).map((tag) => (
-                                                    <Badge
-                                                        key={tag.id}
-                                                        variant="outline"
-                                                        className="text-xs"
-                                                    >
-                                                        #{tag.name}
-                                                    </Badge>
-                                                ))}
-                                            </div>
-                                        )}
+                                        {product.tags &&
+                                            product.tags.length > 0 && (
+                                                <div className="mt-3 flex flex-wrap gap-1">
+                                                    {product.tags
+                                                        .slice(0, 3)
+                                                        .map((tag) => (
+                                                            <Badge
+                                                                key={tag.id}
+                                                                variant="outline"
+                                                                className="text-xs"
+                                                            >
+                                                                #{tag.name}
+                                                            </Badge>
+                                                        ))}
+                                                </div>
+                                            )}
                                     </div>
                                 </div>
                             ))}

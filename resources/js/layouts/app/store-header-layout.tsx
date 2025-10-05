@@ -15,6 +15,7 @@ import { useState } from 'react';
 const navigation = {
     pages: [
         { name: 'Products', href: '/products' },
+        { name: 'Recently Viewed', href: '/recently-viewed' },
         { name: 'Wishlist', href: '/wishlist' },
         { name: 'About', href: '/about' },
     ],
@@ -87,7 +88,7 @@ export default function Example() {
                                     </div>
                                     <div className="flow-root">
                                         <Link
-                                            href="/profile"
+                                            href="/dashboard/profile"
                                             className="-m-2 block p-2 font-medium text-gray-900"
                                         >
                                             Profile
@@ -208,7 +209,7 @@ export default function Example() {
                                                 className="h-6 w-px bg-gray-200"
                                             />
                                             <Link
-                                                href="/profile"
+                                                href="/dashboard/profile"
                                                 className="text-sm font-medium text-gray-700 hover:text-gray-800"
                                             >
                                                 Profile

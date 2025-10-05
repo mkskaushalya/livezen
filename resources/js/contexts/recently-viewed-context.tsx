@@ -4,7 +4,12 @@ type Product = {
     id: string;
     name: string;
     price: number;
-    status: string;
+    status: 'Active' | 'Low Stock' | 'Out of Stock';
+    stock: number;
+    category?: {
+        id: string;
+        name: string;
+    };
     viewedAt: number;
 };
 
@@ -14,17 +19,25 @@ type RecentlyViewedContextType = {
     clearRecentProducts: () => void;
 };
 
-const RecentlyViewedContext = createContext<RecentlyViewedContextType | undefined>(undefined);
+const RecentlyViewedContext = createContext<
+    RecentlyViewedContextType | undefined
+>(undefined);
 
 export function useRecentlyViewed() {
     const context = useContext(RecentlyViewedContext);
     if (!context) {
-        throw new Error('useRecentlyViewed must be used within a RecentlyViewedProvider');
+        throw new Error(
+            'useRecentlyViewed must be used within a RecentlyViewedProvider',
+        );
     }
     return context;
 }
 
-export function RecentlyViewedProvider({ children }: { children: React.ReactNode }) {
+export function RecentlyViewedProvider({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
     const [recentProducts, setRecentProducts] = useState<Product[]>([]);
 
     // Load recently viewed products from localStorage on mount
@@ -34,10 +47,15 @@ export function RecentlyViewedProvider({ children }: { children: React.ReactNode
             try {
                 const parsed = JSON.parse(stored);
                 // Sort by viewedAt timestamp (most recent first)
-                const sorted = parsed.sort((a: Product, b: Product) => b.viewedAt - a.viewedAt);
+                const sorted = parsed.sort(
+                    (a: Product, b: Product) => b.viewedAt - a.viewedAt,
+                );
                 setRecentProducts(sorted);
             } catch (error) {
-                console.error('Failed to parse recently viewed products:', error);
+                console.error(
+                    'Failed to parse recently viewed products:',
+                    error,
+                );
                 localStorage.removeItem('recentlyViewed');
             }
         }
@@ -46,7 +64,10 @@ export function RecentlyViewedProvider({ children }: { children: React.ReactNode
     // Save to localStorage whenever recentProducts changes
     useEffect(() => {
         if (recentProducts.length > 0) {
-            localStorage.setItem('recentlyViewed', JSON.stringify(recentProducts));
+            localStorage.setItem(
+                'recentlyViewed',
+                JSON.stringify(recentProducts),
+            );
         }
     }, [recentProducts]);
 
@@ -56,13 +77,13 @@ export function RecentlyViewedProvider({ children }: { children: React.ReactNode
             viewedAt: Date.now(),
         };
 
-        setRecentProducts(prev => {
+        setRecentProducts((prev) => {
             // Remove existing entry if it exists
-            const filtered = prev.filter(p => p.id !== product.id);
-            
+            const filtered = prev.filter((p) => p.id !== product.id);
+
             // Add to front and limit to 10 items
             const updated = [productWithTimestamp, ...filtered].slice(0, 10);
-            
+
             return updated;
         });
     };
@@ -73,11 +94,11 @@ export function RecentlyViewedProvider({ children }: { children: React.ReactNode
     };
 
     return (
-        <RecentlyViewedContext.Provider 
-            value={{ 
-                recentProducts, 
-                addRecentProduct, 
-                clearRecentProducts 
+        <RecentlyViewedContext.Provider
+            value={{
+                recentProducts,
+                addRecentProduct,
+                clearRecentProducts,
             }}
         >
             {children}

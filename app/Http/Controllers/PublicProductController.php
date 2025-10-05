@@ -5,11 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Tag;
+use App\Services\RecommendationService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class PublicProductController extends Controller
 {
+    protected $recommendationService;
+
+    public function __construct(RecommendationService $recommendationService)
+    {
+        $this->recommendationService = $recommendationService;
+    }
+
     public function index(Request $request)
     {
         $query = Product::with(['category', 'tags']);
@@ -50,10 +58,20 @@ class PublicProductController extends Controller
         $categories = Category::withCount('products')->get();
         $tags = Tag::withCount('products')->get();
 
+        // Get personalized recommendations for the products page
+        $user = $request->user();
+        if ($user) {
+            $recommendedProducts = $this->recommendationService->getPersonalizedRecommendations($user, 4);
+        } else {
+            $recommendedProducts = $this->recommendationService->getTrendingProducts(4);
+        }
+        $recommendedProducts->load(['category', 'tags']);
+
         return Inertia::render('products/index', [
             'products' => $products,
             'categories' => $categories,
             'tags' => $tags,
+            'recommendedProducts' => $recommendedProducts,
             'filters' => [
                 'search' => $request->search,
                 'category' => $request->category,
@@ -64,17 +82,19 @@ class PublicProductController extends Controller
         ]);
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
         $product = Product::with(['category', 'tags'])
             ->findOrFail($id);
 
-        // Get related products from the same category
-        $relatedProducts = Product::with(['category', 'tags'])
-            ->where('category_id', $product->category_id)
-            ->where('id', '!=', $product->id)
-            ->limit(4)
-            ->get();
+        // Track product view for authenticated users
+        if ($request->user()) {
+            $this->recommendationService->trackProductView($request->user(), $product);
+        }
+
+        // Get intelligent related products using recommendation service
+        $relatedProducts = $this->recommendationService->getRelatedProducts($product, 4);
+        $relatedProducts->load(['category', 'tags']);
 
         return Inertia::render('products/show', [
             'product' => $product,

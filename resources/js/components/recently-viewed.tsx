@@ -7,9 +7,9 @@ interface RecentlyViewedProps {
     showClearButton?: boolean;
 }
 
-export default function RecentlyViewed({ 
-    className = '', 
-    showClearButton = true 
+export default function RecentlyViewed({
+    className = '',
+    showClearButton = true,
 }: RecentlyViewedProps) {
     const { recentProducts, clearRecentProducts } = useRecentlyViewed();
 
@@ -31,8 +31,10 @@ export default function RecentlyViewed({
     };
 
     return (
-        <div className={`bg-white rounded-lg shadow-sm border p-4 ${className}`}>
-            <div className="flex items-center justify-between mb-4">
+        <div
+            className={`rounded-lg border bg-white p-4 shadow-sm ${className}`}
+        >
+            <div className="mb-4 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <Clock className="h-5 w-5 text-gray-500" />
                     <h3 className="text-lg font-semibold text-gray-900">
@@ -42,7 +44,7 @@ export default function RecentlyViewed({
                 {showClearButton && (
                     <button
                         onClick={clearRecentProducts}
-                        className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1"
+                        className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
                         title="Clear recent products"
                     >
                         <X className="h-4 w-4" />
@@ -56,16 +58,16 @@ export default function RecentlyViewed({
                     <Link
                         key={product.id}
                         href={`/products/${product.id}`}
-                        className="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 transition-colors"
+                        className="flex items-center gap-3 rounded-md p-2 transition-colors hover:bg-gray-50"
                     >
-                        <div className="w-12 h-12 bg-gradient-to-br from-gray-100 to-gray-200 rounded-md flex items-center justify-center">
-                            <span className="text-xs text-gray-500 font-medium">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-md bg-gradient-to-br from-gray-100 to-gray-200">
+                            <span className="text-xs font-medium text-gray-500">
                                 {product.name.substring(0, 2).toUpperCase()}
                             </span>
                         </div>
-                        
-                        <div className="flex-1 min-w-0">
-                            <h4 className="text-sm font-medium text-gray-900 truncate">
+
+                        <div className="min-w-0 flex-1">
+                            <h4 className="truncate text-sm font-medium text-gray-900">
                                 {product.name}
                             </h4>
                             <div className="flex items-center justify-between">
@@ -82,12 +84,12 @@ export default function RecentlyViewed({
             </div>
 
             {recentProducts.length > 5 && (
-                <div className="mt-3 pt-3 border-t">
+                <div className="mt-3 border-t pt-3">
                     <Link
-                        href="/products"
-                        className="text-sm text-indigo-600 hover:text-indigo-500 font-medium"
+                        href="/recently-viewed"
+                        className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
                     >
-                        View all products →
+                        View all recently viewed →
                     </Link>
                 </div>
             )}

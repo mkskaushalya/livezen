@@ -1,5 +1,7 @@
 import NavStore from '@/components/nav-store';
+import ProductEditButton from '@/components/products/product-edit-button';
 import RecentlyViewed from '@/components/recently-viewed';
+import RecommendedProducts from '@/components/recommended-products';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/contexts/cart-context';
@@ -25,19 +27,20 @@ type Product = {
     stock: number;
     description?: string;
     tags?: Tag[];
-    status: 'Active' | 'Inactive' | 'Low Stock';
+    status: 'Active' | 'Inactive' | 'Low Stock' | 'Out of Stock';
 };
 
 interface PageProps {
     featuredProducts: Product[];
     categories: Category[];
     topCategories: Category[];
+    recommendedProducts: Product[];
     [key: string]: unknown;
 }
 
 export default function Home() {
     const { props } = usePage<PageProps>();
-    const { featuredProducts, topCategories } = props;
+    const { featuredProducts, topCategories, recommendedProducts } = props;
     const { addToCart } = useCart();
 
     const newsletterForm = useForm({
@@ -271,9 +274,17 @@ export default function Home() {
                                 </div>
                                 <div className="flex flex-1 flex-col p-6">
                                     <div className="flex items-center justify-between">
-                                        <h3 className="text-lg font-medium text-gray-900 group-hover:text-indigo-600">
-                                            {product.name}
-                                        </h3>
+                                        <div className="flex items-center gap-2">
+                                            <h3 className="text-lg font-medium text-gray-900 group-hover:text-indigo-600">
+                                                {product.name}
+                                            </h3>
+                                            <ProductEditButton
+                                                product={product}
+                                                size="icon"
+                                                variant="ghost"
+                                                className="relative z-20 opacity-0 transition-opacity group-hover:opacity-100"
+                                            />
+                                        </div>
                                         <Badge
                                             variant={
                                                 product.status === 'Active'
@@ -399,6 +410,17 @@ export default function Home() {
                     </div>
                 </div>
             </div>
+
+            {/* Recommended Products Section */}
+            {recommendedProducts && recommendedProducts.length > 0 && (
+                <RecommendedProducts
+                    products={recommendedProducts}
+                    title="Recommended for You"
+                    subtitle="Discover products tailored to your interests and browsing history"
+                    showViewAll={true}
+                    className="bg-gray-50"
+                />
+            )}
 
             {/* Recently Viewed Section */}
             <div className="bg-white py-16">

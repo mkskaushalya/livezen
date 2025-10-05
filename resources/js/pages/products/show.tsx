@@ -1,9 +1,10 @@
 import Footer from '@/components/footer';
 import NavStore from '@/components/nav-store';
-import WishlistButton from '@/components/wishlist-button';
+import ProductEditButton from '@/components/products/product-edit-button';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import WishlistButton from '@/components/wishlist-button';
 import { useCart } from '@/contexts/cart-context';
 import { useRecentlyViewed } from '@/contexts/recently-viewed-context';
 import { Link, usePage } from '@inertiajs/react';
@@ -46,8 +47,18 @@ export default function ProductShow() {
             name: product.name,
             price: product.price,
             status: product.status,
+            stock: product.stock,
+            category: product.category,
         });
-    }, [product.id, product.name, product.price, product.status, addRecentProduct]);
+    }, [
+        product.id,
+        product.name,
+        product.price,
+        product.status,
+        product.stock,
+        product.category,
+        addRecentProduct,
+    ]);
 
     const handleAddToCart = () => {
         if (product.status === 'Out of Stock' || product.stock <= 0) {
@@ -100,9 +111,17 @@ export default function ProductShow() {
                     {/* Product Details */}
                     <div className="mt-10 px-4 sm:mt-16 sm:px-0 lg:mt-0">
                         <div className="flex items-start justify-between">
-                            <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-                                {product.name}
-                            </h1>
+                            <div className="flex items-center gap-3">
+                                <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+                                    {product.name}
+                                </h1>
+                                <ProductEditButton
+                                    product={product}
+                                    variant="outline"
+                                    size="sm"
+                                    showText={true}
+                                />
+                            </div>
                             <Badge
                                 variant={
                                     product.status === 'Active'
@@ -236,9 +255,9 @@ export default function ProductShow() {
                                     >
                                         Add to Cart
                                     </Button>
-                                    
-                                    <WishlistButton 
-                                        productId={product.id} 
+
+                                    <WishlistButton
+                                        productId={product.id}
                                         className="shadow-md"
                                     />
                                 </div>

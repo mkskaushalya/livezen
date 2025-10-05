@@ -1,6 +1,7 @@
 import Footer from '@/components/footer';
 import NavStore from '@/components/nav-store';
-import WishlistButton from '@/components/wishlist-button';
+import ProductEditButton from '@/components/products/product-edit-button';
+import RecommendedProducts from '@/components/recommended-products';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,6 +12,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import WishlistButton from '@/components/wishlist-button';
 import { useCart } from '@/contexts/cart-context';
 import { Link, router, usePage } from '@inertiajs/react';
 import { FilterIcon, SearchIcon, ShoppingBagIcon } from 'lucide-react';
@@ -44,6 +46,7 @@ interface PageProps {
     products: PaginatedProducts;
     categories: Category[];
     tags: Tag[];
+    recommendedProducts: Product[];
     filters: {
         search?: string;
         category?: string;
@@ -56,7 +59,7 @@ interface PageProps {
 
 export default function ProductsIndex() {
     const { props } = usePage<PageProps>();
-    const { products, categories, tags, filters } = props;
+    const { products, categories, tags, recommendedProducts, filters } = props;
     const { addToCart } = useCart();
 
     const [searchTerm, setSearchTerm] = React.useState(filters.search || '');
@@ -239,11 +242,17 @@ export default function ProductsIndex() {
                             key={product.id}
                             className="group relative overflow-hidden rounded-lg bg-white shadow-sm transition-shadow hover:shadow-lg"
                         >
-                            {/* Wishlist button */}
-                            <div className="absolute top-2 right-2 z-10">
+                            {/* Action buttons */}
+                            <div className="absolute top-2 right-2 z-10 flex gap-2">
+                                <ProductEditButton
+                                    product={product}
+                                    size="icon"
+                                    variant="ghost"
+                                    className="bg-white/80 shadow-sm hover:bg-white"
+                                />
                                 <WishlistButton productId={product.id} />
                             </div>
-                            
+
                             <div className="aspect-square w-full bg-gradient-to-br from-gray-100 to-gray-200 p-8">
                                 <div className="flex h-full items-center justify-center">
                                     <ShoppingBagIcon className="h-16 w-16 text-gray-400" />
@@ -370,6 +379,16 @@ export default function ProductsIndex() {
                             Clear all filters
                         </Button>
                     </div>
+                )}
+
+                {/* Recommended Products Section */}
+                {recommendedProducts && recommendedProducts.length > 0 && (
+                    <RecommendedProducts
+                        products={recommendedProducts}
+                        title="You Might Also Like"
+                        subtitle="Discover more products based on your interests"
+                        className="mt-12 bg-gray-50"
+                    />
                 )}
             </div>
             <Footer />

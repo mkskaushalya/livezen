@@ -20,6 +20,10 @@ type Product = {
         id: string;
         name: string;
     };
+    seller?: {
+        id: string;
+        name: string;
+    };
     price: number;
     stock: number;
     description?: string;
@@ -42,6 +46,7 @@ export function DataTable({ products, categories, tags }: DataTableProps) {
                         <TableHead>#</TableHead>
                         <TableHead>Product</TableHead>
                         <TableHead>Category</TableHead>
+                        <TableHead>Seller</TableHead>
                         <TableHead>Price (LKR)</TableHead>
                         <TableHead>Stock</TableHead>
                         <TableHead>Status</TableHead>
@@ -57,6 +62,9 @@ export function DataTable({ products, categories, tags }: DataTableProps) {
                                     {p.name}
                                 </TableCell>
                                 <TableCell>{p.category?.name ?? '—'}</TableCell>
+                                <TableCell className="text-sm text-gray-600">
+                                    {p.seller?.name ?? '—'}
+                                </TableCell>
                                 <TableCell className="font-semibold text-indigo-600">
                                     {Number(p.price).toLocaleString()}
                                 </TableCell>

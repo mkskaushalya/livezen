@@ -32,6 +32,7 @@ type Product = {
     id: string;
     name: string;
     category?: { id: string; name: string };
+    seller?: { id: string; name: string };
     price: number;
     stock: number;
     description?: string;
@@ -199,10 +200,12 @@ export function EditProductDialog({
                                 id="price"
                                 type="number"
                                 min="0"
+                                step="0.01"
                                 value={data.price}
                                 onChange={(e) =>
                                     setData('price', e.target.value)
                                 }
+                                placeholder="0.00"
                             />
                             {errors.price && (
                                 <p className="text-sm text-red-500">

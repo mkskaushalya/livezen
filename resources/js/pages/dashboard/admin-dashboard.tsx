@@ -22,6 +22,7 @@ type Product = {
     id: string;
     name: string;
     category?: { id: string; name: string };
+    seller?: { id: string; name: string };
     price: number;
     stock: number;
     description?: string;

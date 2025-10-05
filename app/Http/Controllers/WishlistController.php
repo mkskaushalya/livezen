@@ -13,7 +13,7 @@ class WishlistController extends Controller
     public function index()
     {
         $wishlistItems = Auth::user()->wishlistProducts()->with(['category', 'tags'])->get();
-        
+
         return Inertia::render('wishlist/index', [
             'wishlistItems' => $wishlistItems
         ]);
@@ -21,6 +21,10 @@ class WishlistController extends Controller
 
     public function store(Request $request)
     {
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Please login to use wishlist'], 401);
+        }
+
         $request->validate([
             'product_id' => 'required|exists:products,id'
         ]);
@@ -47,6 +51,10 @@ class WishlistController extends Controller
 
     public function destroy(Request $request)
     {
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Please login to use wishlist'], 401);
+        }
+
         $request->validate([
             'product_id' => 'required|exists:products,id'
         ]);
@@ -63,6 +71,10 @@ class WishlistController extends Controller
 
     public function check(Request $request)
     {
+        if (!Auth::check()) {
+            return response()->json(['in_wishlist' => false]);
+        }
+
         $request->validate([
             'product_id' => 'required|exists:products,id'
         ]);

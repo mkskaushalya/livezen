@@ -166,10 +166,12 @@ export function AddProductDialog({ categories, tags }: AddProductDialogProps) {
                                 id="price"
                                 type="number"
                                 min="0"
+                                step="0.01"
                                 value={data.price}
                                 onChange={(e) =>
                                     setData('price', e.target.value)
                                 }
+                                placeholder="0.00"
                             />
                             {errors.price && (
                                 <p className="text-sm text-red-500">

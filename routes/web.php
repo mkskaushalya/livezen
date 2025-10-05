@@ -17,10 +17,39 @@ Route::get('/about', function () {
     return Inertia::render('about');
 })->name('about');
 
+// Recently viewed page
+Route::get('/recently-viewed', function () {
+    return Inertia::render('recently-viewed');
+})->name('recently-viewed');
+
+// Recommendation routes
+Route::get('/api/recommendations', [App\Http\Controllers\RecommendationController::class, 'getUserRecommendations'])->name('recommendations.user');
+Route::get('/api/recommendations/home', [App\Http\Controllers\RecommendationController::class, 'getHomeRecommendations'])->name('recommendations.home');
+Route::get('/api/recommendations/trending', [App\Http\Controllers\RecommendationController::class, 'getTrending'])->name('recommendations.trending');
+Route::get('/api/products/{product}/related', [App\Http\Controllers\RecommendationController::class, 'getRelatedProducts'])->name('recommendations.related');
+Route::post('/api/recommendations/track-view', [App\Http\Controllers\RecommendationController::class, 'trackView'])->name('recommendations.track');
+
+// ML Recommendation management routes (Admin only)
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/ml-recommendations', [App\Http\Controllers\RecommendationController::class, 'adminDashboard'])->name('admin.ml-recommendations');
+    Route::get('/api/admin/recommendations/stats', [App\Http\Controllers\RecommendationController::class, 'getStats'])->name('admin.recommendations.stats');
+    Route::post('/api/admin/recommendations/clear-cache', [App\Http\Controllers\RecommendationController::class, 'clearCaches'])->name('admin.recommendations.clear-cache');
+    Route::get('/api/products/{product}/ml-recommendations', [App\Http\Controllers\RecommendationController::class, 'getMLOnlyRecommendations'])->name('admin.recommendations.ml-only');
+});
+
 // Newsletter subscription
 Route::post('/newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    // Main dashboard route
+    Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
+
+    // Dashboard sub-routes
+    Route::get('/dashboard/orders', [App\Http\Controllers\DashboardController::class, 'orders'])->name('dashboard.orders');
+    Route::get('/dashboard/profile', [App\Http\Controllers\DashboardController::class, 'profile'])->name('dashboard.profile');
+    Route::put('/dashboard/profile', [App\Http\Controllers\DashboardController::class, 'updateProfile'])->name('dashboard.profile.update');
+
+    // Role-specific dashboards
     Route::get('/dashboard/user', function () {
         return Inertia::render('dashboard/user-dashboard');
     })->name('user.dashboard')->middleware('role:user');
@@ -28,10 +57,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard/seller', [ProductController::class, 'index'])->name('seller.dashboard')->middleware('role:seller');
 
     Route::get('/dashboard/admin', [ProductController::class, 'index'])->name('admin.dashboard')->middleware('role:admin');
-
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
 
     // Wishlist routes
     Route::get('/wishlist', [App\Http\Controllers\WishlistController::class, 'index'])->name('wishlist.index');
