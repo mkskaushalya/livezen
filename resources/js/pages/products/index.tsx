@@ -1,5 +1,5 @@
-import NavStore from '@/components/nav-store';
 import Footer from '@/components/footer';
+import NavStore from '@/components/nav-store';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -60,9 +60,9 @@ export default function ProductsIndex() {
 
     const [searchTerm, setSearchTerm] = React.useState(filters.search || '');
     const [selectedCategory, setSelectedCategory] = React.useState(
-        filters.category || '',
+        filters.category || 'all',
     );
-    const [selectedTag, setSelectedTag] = React.useState(filters.tag || '');
+    const [selectedTag, setSelectedTag] = React.useState(filters.tag || 'all');
     const [sortBy, setSortBy] = React.useState(filters.sort || 'created_at');
     const [sortOrder, setSortOrder] = React.useState(filters.order || 'desc');
 
@@ -82,8 +82,8 @@ export default function ProductsIndex() {
     const handleSearch = () => {
         const params = new URLSearchParams();
         if (searchTerm) params.set('search', searchTerm);
-        if (selectedCategory) params.set('category', selectedCategory);
-        if (selectedTag) params.set('tag', selectedTag);
+        if (selectedCategory && selectedCategory !== 'all') params.set('category', selectedCategory);
+        if (selectedTag && selectedTag !== 'all') params.set('tag', selectedTag);
         if (sortBy) params.set('sort', sortBy);
         if (sortOrder) params.set('order', sortOrder);
 
@@ -94,8 +94,8 @@ export default function ProductsIndex() {
 
     const clearFilters = () => {
         setSearchTerm('');
-        setSelectedCategory('');
-        setSelectedTag('');
+        setSelectedCategory('all');
+        setSelectedTag('all');
         setSortBy('created_at');
         setSortOrder('desc');
         router.get('/products', {}, { preserveState: true });
@@ -149,7 +149,7 @@ export default function ProductsIndex() {
                                     <SelectValue placeholder="All categories" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="">
+                                    <SelectItem value="all">
                                         All categories
                                     </SelectItem>
                                     {categories.map((category) => (
@@ -177,7 +177,7 @@ export default function ProductsIndex() {
                                     <SelectValue placeholder="All tags" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="">All tags</SelectItem>
+                                    <SelectItem value="all">All tags</SelectItem>
                                     {tags.map((tag) => (
                                         <SelectItem key={tag.id} value={tag.id}>
                                             {tag.name} ({tag.products_count})

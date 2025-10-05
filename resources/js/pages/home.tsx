@@ -143,7 +143,7 @@ export default function Home() {
                                 <Button
                                     variant="outline"
                                     size="lg"
-                                    className="border-2 border-white text-white bg-transparent hover:bg-white hover:text-purple-600 font-semibold"
+                                    className="border-2 border-white bg-transparent font-semibold text-white hover:bg-white hover:text-purple-600"
                                 >
                                     Learn More
                                 </Button>
@@ -224,7 +224,7 @@ export default function Home() {
                                         <Button
                                             variant="outline"
                                             size="sm"
-                                            className="mt-4 border-2 border-white text-white bg-transparent hover:bg-white hover:text-gray-900 font-semibold transition-all duration-200"
+                                            className="mt-4 border-2 border-white bg-transparent font-semibold text-white transition-all duration-200 hover:bg-white hover:text-gray-900"
                                         >
                                             Browse
                                         </Button>
