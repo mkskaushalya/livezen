@@ -1,9 +1,11 @@
 import Footer from '@/components/footer';
 import NavStore from '@/components/nav-store';
+import WishlistButton from '@/components/wishlist-button';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useCart } from '@/contexts/cart-context';
+import { useRecentlyViewed } from '@/contexts/recently-viewed-context';
 import { Link, usePage } from '@inertiajs/react';
 import { ArrowLeftIcon, ShoppingBagIcon } from 'lucide-react';
 import * as React from 'react';
@@ -33,8 +35,19 @@ export default function ProductShow() {
     const { props } = usePage<PageProps>();
     const { product, relatedProducts } = props;
     const { addToCart } = useCart();
+    const { addRecentProduct } = useRecentlyViewed();
 
     const [quantity, setQuantity] = React.useState(1);
+
+    // Track product view
+    React.useEffect(() => {
+        addRecentProduct({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            status: product.status,
+        });
+    }, [product.id, product.name, product.price, product.status, addRecentProduct]);
 
     const handleAddToCart = () => {
         if (product.status === 'Out of Stock' || product.stock <= 0) {
@@ -46,7 +59,9 @@ export default function ProductShow() {
             return;
         }
         if (product.status === 'Low Stock') {
-            toast.warning(`${product.name} is low in stock! Only ${product.stock} left.`);
+            toast.warning(
+                `${product.name} is low in stock! Only ${product.stock} left.`,
+            );
         }
         addToCart(product, quantity);
         toast.success(`${quantity} x ${product.name} added to cart!`);
@@ -209,17 +224,24 @@ export default function ProductShow() {
                                     </div>
                                 </div>
 
-                                <Button
-                                    onClick={handleAddToCart}
-                                    disabled={
-                                        product.status === 'Out of Stock' ||
-                                        product.stock <= 0
-                                    }
-                                    className="max-w-xs flex-1"
-                                    size="lg"
-                                >
-                                    Add to Cart
-                                </Button>
+                                <div className="flex gap-4">
+                                    <Button
+                                        onClick={handleAddToCart}
+                                        disabled={
+                                            product.status === 'Out of Stock' ||
+                                            product.stock <= 0
+                                        }
+                                        className="flex-1"
+                                        size="lg"
+                                    >
+                                        Add to Cart
+                                    </Button>
+                                    
+                                    <WishlistButton 
+                                        productId={product.id} 
+                                        className="shadow-md"
+                                    />
+                                </div>
                             </div>
 
                             {product.stock > 0 && product.stock <= 5 && (

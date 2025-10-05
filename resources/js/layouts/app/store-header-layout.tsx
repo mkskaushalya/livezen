@@ -15,6 +15,7 @@ import { useState } from 'react';
 const navigation = {
     pages: [
         { name: 'Products', href: '/products' },
+        { name: 'Wishlist', href: '/wishlist' },
         { name: 'About', href: '/about' },
     ],
 };

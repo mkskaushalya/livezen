@@ -1,5 +1,6 @@
 import Footer from '@/components/footer';
 import NavStore from '@/components/nav-store';
+import WishlistButton from '@/components/wishlist-button';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -72,7 +73,9 @@ export default function ProductsIndex() {
             return;
         }
         if (product.status === 'Low Stock') {
-            toast.warning(`${product.name} is low in stock! Only ${product.stock} left.`);
+            toast.warning(
+                `${product.name} is low in stock! Only ${product.stock} left.`,
+            );
         }
         addToCart(product, 1);
         toast.success(`${product.name} added to cart!`);
@@ -236,6 +239,11 @@ export default function ProductsIndex() {
                             key={product.id}
                             className="group relative overflow-hidden rounded-lg bg-white shadow-sm transition-shadow hover:shadow-lg"
                         >
+                            {/* Wishlist button */}
+                            <div className="absolute top-2 right-2 z-10">
+                                <WishlistButton productId={product.id} />
+                            </div>
+                            
                             <div className="aspect-square w-full bg-gradient-to-br from-gray-100 to-gray-200 p-8">
                                 <div className="flex h-full items-center justify-center">
                                     <ShoppingBagIcon className="h-16 w-16 text-gray-400" />

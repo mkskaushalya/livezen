@@ -1,4 +1,5 @@
 import NavStore from '@/components/nav-store';
+import RecentlyViewed from '@/components/recently-viewed';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/contexts/cart-context';
@@ -395,6 +396,15 @@ export default function Home() {
                                 </div>
                             </div>
                         ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* Recently Viewed Section */}
+            <div className="bg-white py-16">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div className="mx-auto max-w-2xl">
+                        <RecentlyViewed />
                     </div>
                 </div>
             </div>

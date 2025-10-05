@@ -32,6 +32,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
+
+    // Wishlist routes
+    Route::get('/wishlist', [App\Http\Controllers\WishlistController::class, 'index'])->name('wishlist.index');
+    Route::post('/wishlist', [App\Http\Controllers\WishlistController::class, 'store'])->name('wishlist.store');
+    Route::delete('/wishlist', [App\Http\Controllers\WishlistController::class, 'destroy'])->name('wishlist.destroy');
+    Route::post('/wishlist/check', [App\Http\Controllers\WishlistController::class, 'check'])->name('wishlist.check');
 });
 
 Route::middleware(['auth', 'role:seller,admin'])->group(function () {

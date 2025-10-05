@@ -5,6 +5,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { Toaster } from './components/ui/sonner';
 import { CartProvider } from './contexts/cart-context';
+import { RecentlyViewedProvider } from './contexts/recently-viewed-context';
 import { initializeTheme } from './hooks/use-appearance';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Livezen';
@@ -21,8 +22,10 @@ createInertiaApp({
 
         root.render(
             <CartProvider>
-                <App {...props} />
-                <Toaster />
+                <RecentlyViewedProvider>
+                    <App {...props} />
+                    <Toaster />
+                </RecentlyViewedProvider>
             </CartProvider>,
         );
     },
