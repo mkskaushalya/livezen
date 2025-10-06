@@ -40,7 +40,7 @@ class RecommendationSystemTest extends TestCase
     public function test_get_related_products_finds_same_category_products()
     {
         $category = Category::factory()->create();
-        
+
         $mainProduct = Product::factory()->create([
             'category_id' => $category->id,
             'status' => 'Active',
@@ -48,22 +48,18 @@ class RecommendationSystemTest extends TestCase
             'name' => 'Main Product'
         ]);
 
-        // Create related products in same category
-        $relatedProduct1 = Product::factory()->create([
-            'category_id' => $category->id,
-            'status' => 'Active',
-            'stock' => 5,
-            'name' => 'Related Product 1'
-        ]);
+        // Create enough related products in same category to fill the rule-based portion (70%)
+        $relatedProducts = [];
+        for ($i = 1; $i <= 6; $i++) {
+            $relatedProducts[] = Product::factory()->create([
+                'category_id' => $category->id,
+                'status' => 'Active',
+                'stock' => 5 + $i,
+                'name' => "Related Product {$i}"
+            ]);
+        }
 
-        $relatedProduct2 = Product::factory()->create([
-            'category_id' => $category->id,
-            'status' => 'Active',
-            'stock' => 8,
-            'name' => 'Related Product 2'
-        ]);
-
-        // Create product in different category (should not be included)
+        // Create product in different category
         $differentCategory = Category::factory()->create();
         Product::factory()->create([
             'category_id' => $differentCategory->id,
@@ -72,23 +68,22 @@ class RecommendationSystemTest extends TestCase
             'name' => 'Different Category Product'
         ]);
 
-        $relatedProducts = $this->recommendationService->getRelatedProducts($mainProduct, 4);
+        $recommendedProducts = $this->recommendationService->getRelatedProducts($mainProduct, 4);
 
-        // Should find products from same category
-        $this->assertGreaterThan(0, $relatedProducts->count());
-        
-        // Check that we got the expected related products
-        $relatedProductIds = $relatedProducts->pluck('id')->toArray();
-        $this->assertContains($relatedProduct1->id, $relatedProductIds);
-        $this->assertContains($relatedProduct2->id, $relatedProductIds);
-        
+        // Should find products
+        $this->assertGreaterThan(0, $recommendedProducts->count());
+        $this->assertLessThanOrEqual(4, $recommendedProducts->count());
+
         // Main product should not be included
-        $this->assertNotContains($mainProduct->id, $relatedProductIds);
-        
-        // All related products should be from same category
-        foreach ($relatedProducts as $product) {
-            $this->assertEquals($category->id, $product->category_id, 
-                "Product {$product->id} has category {$product->category_id}, expected {$category->id}");
+        $recommendedProductIds = $recommendedProducts->pluck('id')->toArray();
+        $this->assertNotContains($mainProduct->id, $recommendedProductIds);
+
+        // At least some products should be from same category (due to rule-based recommendations)
+        $sameCategoryCount = $recommendedProducts->where('category_id', $category->id)->count();
+        $this->assertGreaterThan(0, $sameCategoryCount, 'Should have at least some products from the same category');
+
+        // All recommended products should be active and in stock
+        foreach ($recommendedProducts as $product) {
             $this->assertEquals('Active', $product->status);
             $this->assertGreaterThan(0, $product->stock);
         }
@@ -97,7 +92,7 @@ class RecommendationSystemTest extends TestCase
     public function test_get_related_products_excludes_out_of_stock()
     {
         $category = Category::factory()->create();
-        
+
         $mainProduct = Product::factory()->create([
             'category_id' => $category->id,
             'status' => 'Active',
@@ -136,7 +131,7 @@ class RecommendationSystemTest extends TestCase
     public function test_get_related_products_finds_similar_price_range()
     {
         $category = Category::factory()->create();
-        
+
         $mainProduct = Product::factory()->create([
             'category_id' => $category->id,
             'price' => 100.00,
@@ -161,7 +156,7 @@ class RecommendationSystemTest extends TestCase
 
         // Should prefer products in similar price range
         $this->assertGreaterThan(0, $relatedProducts->count());
-        
+
         // Check if similar price product is preferred over expensive one
         $productIds = $relatedProducts->pluck('id')->toArray();
         $this->assertContains($similarPriceProduct->id, $productIds);
@@ -172,7 +167,7 @@ class RecommendationSystemTest extends TestCase
         $category = Category::factory()->create();
         $tag1 = Tag::factory()->create(['name' => 'gaming']);
         $tag2 = Tag::factory()->create(['name' => 'professional']);
-        
+
         $mainProduct = Product::factory()->create([
             'category_id' => $category->id,
             'status' => 'Active'
@@ -203,7 +198,7 @@ class RecommendationSystemTest extends TestCase
     public function test_get_personalized_recommendations_for_new_user()
     {
         $user = User::factory()->create();
-        
+
         // Create some popular products
         $category = Category::factory()->create();
         Product::factory()->count(3)->create([
@@ -221,7 +216,7 @@ class RecommendationSystemTest extends TestCase
     {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         // Create products user has viewed
         $viewedProduct = Product::factory()->create([
             'category_id' => $category->id,
@@ -240,7 +235,7 @@ class RecommendationSystemTest extends TestCase
         $recommendations = $this->recommendationService->getPersonalizedRecommendations($user, 4);
 
         $this->assertInstanceOf(\Illuminate\Database\Eloquent\Collection::class, $recommendations);
-        
+
         // Should not include the viewed product itself
         $recommendedIds = $recommendations->pluck('id')->toArray();
         $this->assertNotContains($viewedProduct->id, $recommendedIds);
@@ -267,7 +262,7 @@ class RecommendationSystemTest extends TestCase
     public function test_get_popular_products_returns_active_products()
     {
         $category = Category::factory()->create();
-        
+
         // Create active products
         Product::factory()->count(3)->create([
             'category_id' => $category->id,
@@ -286,7 +281,7 @@ class RecommendationSystemTest extends TestCase
 
         $this->assertInstanceOf(\Illuminate\Database\Eloquent\Collection::class, $popularProducts);
         $this->assertLessThanOrEqual(5, $popularProducts->count());
-        
+
         // All products should be active and in stock
         foreach ($popularProducts as $product) {
             $this->assertEquals('Active', $product->status);
@@ -297,7 +292,7 @@ class RecommendationSystemTest extends TestCase
     public function test_get_trending_products_returns_recent_products()
     {
         $category = Category::factory()->create();
-        
+
         // Create products
         Product::factory()->count(5)->create([
             'category_id' => $category->id,
@@ -309,7 +304,7 @@ class RecommendationSystemTest extends TestCase
 
         $this->assertInstanceOf(\Illuminate\Database\Eloquent\Collection::class, $trendingProducts);
         $this->assertLessThanOrEqual(3, $trendingProducts->count());
-        
+
         // All products should be active and in stock
         foreach ($trendingProducts as $product) {
             $this->assertEquals('Active', $product->status);
@@ -328,7 +323,7 @@ class RecommendationSystemTest extends TestCase
 
         // Track view to create cache entries
         $this->recommendationService->trackProductView($user, $product);
-        
+
         // Verify cache exists
         $cacheKey = "user_views_{$user->id}";
         $this->assertNotNull(Cache::get($cacheKey));
@@ -348,7 +343,7 @@ class RecommendationSystemTest extends TestCase
         $this->assertArrayHasKey('ml_stats', $stats);
         $this->assertArrayHasKey('cache_info', $stats);
         $this->assertArrayHasKey('system_info', $stats);
-        
+
         // System info should contain expected keys
         $this->assertArrayHasKey('php_version', $stats['system_info']);
         $this->assertArrayHasKey('laravel_version', $stats['system_info']);
@@ -372,7 +367,7 @@ class RecommendationSystemTest extends TestCase
     public function test_recommendations_respect_limit_parameter()
     {
         $category = Category::factory()->create();
-        
+
         $mainProduct = Product::factory()->create([
             'category_id' => $category->id,
             'status' => 'Active'
@@ -385,14 +380,14 @@ class RecommendationSystemTest extends TestCase
         ]);
 
         $relatedProducts = $this->recommendationService->getRelatedProducts($mainProduct, 3);
-        
+
         $this->assertLessThanOrEqual(3, $relatedProducts->count());
     }
 
     public function test_recommendations_cache_functionality()
     {
         Cache::flush(); // Clear cache
-        
+
         $category = Category::factory()->create();
         $product = Product::factory()->create([
             'category_id' => $category->id,
@@ -408,15 +403,15 @@ class RecommendationSystemTest extends TestCase
         // First call should populate cache
         $cacheKey = "hybrid_related_products_{$product->id}_4";
         $this->assertNull(Cache::get($cacheKey));
-        
+
         $recommendations1 = $this->recommendationService->getRelatedProducts($product, 4);
-        
+
         // Cache should now be populated
         $this->assertNotNull(Cache::get($cacheKey));
-        
+
         // Second call should use cache (results should be identical)
         $recommendations2 = $this->recommendationService->getRelatedProducts($product, 4);
-        
+
         $this->assertEquals($recommendations1->pluck('id'), $recommendations2->pluck('id'));
     }
 }

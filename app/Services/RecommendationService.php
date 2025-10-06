@@ -109,7 +109,7 @@ class RecommendationService
 
         // Convert to Eloquent Collection and take the required limit
         $limitedRecommendations = $recommendations->take($limit);
-        
+
         // Ensure we return an Eloquent Collection
         return new Collection($limitedRecommendations->values()->all());
     }

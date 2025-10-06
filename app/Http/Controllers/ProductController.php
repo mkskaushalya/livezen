@@ -73,6 +73,7 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'stock' => 'integer|min:0',
             'image' => 'nullable|string',
+            'status' => 'nullable|string|in:Active,Inactive,Out of Stock,Low Stock',
         ]);
 
         $product->update($validated);

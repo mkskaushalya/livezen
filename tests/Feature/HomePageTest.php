@@ -22,7 +22,7 @@ class HomePageTest extends TestCase
     public function test_home_page_displays_featured_products()
     {
         $category = Category::factory()->create();
-        
+
         // Create featured products
         Product::factory()->count(5)->create([
             'category_id' => $category->id,
@@ -31,7 +31,7 @@ class HomePageTest extends TestCase
         ]);
 
         $response = $this->get(route('home'));
-        
+
         $response->assertStatus(200);
         // The view should receive featuredProducts data
         $response->assertInertia(function ($assert) {
@@ -44,11 +44,11 @@ class HomePageTest extends TestCase
         Category::factory()->count(3)->create();
 
         $response = $this->get(route('home'));
-        
+
         $response->assertStatus(200);
         $response->assertInertia(function ($assert) {
             $assert->has('categories')
-                  ->has('topCategories');
+                ->has('topCategories');
         });
     }
 
@@ -56,7 +56,7 @@ class HomePageTest extends TestCase
     {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         Product::factory()->count(4)->create([
             'category_id' => $category->id,
             'status' => 'Active',
@@ -64,7 +64,7 @@ class HomePageTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)->get(route('home'));
-        
+
         $response->assertStatus(200);
         $response->assertInertia(function ($assert) {
             $assert->has('recommendedProducts');
@@ -74,7 +74,7 @@ class HomePageTest extends TestCase
     public function test_home_page_shows_trending_products_for_guest_user()
     {
         $category = Category::factory()->create();
-        
+
         Product::factory()->count(4)->create([
             'category_id' => $category->id,
             'status' => 'Active',
@@ -82,7 +82,7 @@ class HomePageTest extends TestCase
         ]);
 
         $response = $this->get(route('home'));
-        
+
         $response->assertStatus(200);
         $response->assertInertia(function ($assert) {
             $assert->has('recommendedProducts');
@@ -92,7 +92,7 @@ class HomePageTest extends TestCase
     public function test_home_page_excludes_out_of_stock_featured_products()
     {
         $category = Category::factory()->create();
-        
+
         // Create in-stock product
         $inStockProduct = Product::factory()->create([
             'category_id' => $category->id,
@@ -110,9 +110,9 @@ class HomePageTest extends TestCase
         ]);
 
         $response = $this->get(route('home'));
-        
+
         $response->assertStatus(200);
-        
+
         // Test that the home controller logic filters correctly
         // by checking that featured products from the database query exclude stock = 0
         $featuredProducts = Product::with(['category', 'tags'])
@@ -121,11 +121,11 @@ class HomePageTest extends TestCase
             ->latest()
             ->limit(8)
             ->get();
-            
+
         // Should only include the in-stock product
         $this->assertEquals(1, $featuredProducts->count());
         $this->assertEquals($inStockProduct->id, $featuredProducts->first()->id);
-        
+
         $response->assertInertia(function ($assert) {
             $assert->has('featuredProducts');
         });
@@ -148,11 +148,11 @@ class HomePageTest extends TestCase
         Category::factory()->count(3)->create();
 
         $response = $this->getJson(route('categories.index'));
-        
+
         $response->assertStatus(200)
-                ->assertJsonStructure([
-                    '*' => ['id', 'name', 'created_at', 'updated_at']
-                ]);
+            ->assertJsonStructure([
+                '*' => ['id', 'name', 'created_at', 'updated_at']
+            ]);
     }
 
     public function test_tags_api_endpoint_returns_json()
@@ -160,11 +160,11 @@ class HomePageTest extends TestCase
         Tag::factory()->count(3)->create();
 
         $response = $this->getJson(route('tags.index'));
-        
+
         $response->assertStatus(200)
-                ->assertJsonStructure([
-                    '*' => ['id', 'name', 'created_at', 'updated_at']
-                ]);
+            ->assertJsonStructure([
+                '*' => ['id', 'name', 'created_at', 'updated_at']
+            ]);
     }
 
     public function test_home_recommendations_api_for_guest()
@@ -177,21 +177,21 @@ class HomePageTest extends TestCase
         ]);
 
         $response = $this->getJson(route('recommendations.home'));
-        
+
         $response->assertStatus(200)
-                ->assertJsonStructure([
-                    'recommendations' => [
-                        '*' => [
-                            'id',
-                            'name',
-                            'price',
-                            'status',
-                            'stock',
-                            'category',
-                            'tags'
-                        ]
+            ->assertJsonStructure([
+                'recommendations' => [
+                    '*' => [
+                        'id',
+                        'name',
+                        'price',
+                        'status',
+                        'stock',
+                        'category',
+                        'tags'
                     ]
-                ]);
+                ]
+            ]);
     }
 
     public function test_home_recommendations_api_for_authenticated_user()
@@ -205,21 +205,21 @@ class HomePageTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)->getJson(route('recommendations.home'));
-        
+
         $response->assertStatus(200)
-                ->assertJsonStructure([
-                    'recommendations' => [
-                        '*' => [
-                            'id',
-                            'name',
-                            'price',
-                            'status',
-                            'stock',
-                            'category',
-                            'tags'
-                        ]
+            ->assertJsonStructure([
+                'recommendations' => [
+                    '*' => [
+                        'id',
+                        'name',
+                        'price',
+                        'status',
+                        'stock',
+                        'category',
+                        'tags'
                     ]
-                ]);
+                ]
+            ]);
     }
 
     public function test_trending_products_api()
@@ -232,21 +232,21 @@ class HomePageTest extends TestCase
         ]);
 
         $response = $this->getJson(route('recommendations.trending'));
-        
+
         $response->assertStatus(200)
-                ->assertJsonStructure([
-                    'trending' => [
-                        '*' => [
-                            'id',
-                            'name',
-                            'price',
-                            'status',
-                            'stock',
-                            'category',
-                            'tags'
-                        ]
+            ->assertJsonStructure([
+                'trending' => [
+                    '*' => [
+                        'id',
+                        'name',
+                        'price',
+                        'status',
+                        'stock',
+                        'category',
+                        'tags'
                     ]
-                ]);
+                ]
+            ]);
     }
 
     public function test_trending_products_api_respects_limit_parameter()
@@ -259,7 +259,7 @@ class HomePageTest extends TestCase
         ]);
 
         $response = $this->getJson(route('recommendations.trending', ['limit' => 3]));
-        
+
         $response->assertStatus(200);
         $trendingProducts = $response->json('trending');
         $this->assertLessThanOrEqual(3, count($trendingProducts));
@@ -275,21 +275,21 @@ class HomePageTest extends TestCase
         ]);
 
         $response = $this->getJson(route('recommendations.user'));
-        
+
         $response->assertStatus(200)
-                ->assertJsonStructure([
-                    'recommendations' => [
-                        '*' => [
-                            'id',
-                            'name',
-                            'price',
-                            'status',
-                            'stock',
-                            'category',
-                            'tags'
-                        ]
+            ->assertJsonStructure([
+                'recommendations' => [
+                    '*' => [
+                        'id',
+                        'name',
+                        'price',
+                        'status',
+                        'stock',
+                        'category',
+                        'tags'
                     ]
-                ]);
+                ]
+            ]);
     }
 
     public function test_user_recommendations_api_for_authenticated_user()
@@ -303,21 +303,21 @@ class HomePageTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)->getJson(route('recommendations.user'));
-        
+
         $response->assertStatus(200)
-                ->assertJsonStructure([
-                    'recommendations' => [
-                        '*' => [
-                            'id',
-                            'name',
-                            'price',
-                            'status',
-                            'stock',
-                            'category',
-                            'tags'
-                        ]
+            ->assertJsonStructure([
+                'recommendations' => [
+                    '*' => [
+                        'id',
+                        'name',
+                        'price',
+                        'status',
+                        'stock',
+                        'category',
+                        'tags'
                     ]
-                ]);
+                ]
+            ]);
     }
 
     public function test_related_products_api()
@@ -337,21 +337,21 @@ class HomePageTest extends TestCase
         ]);
 
         $response = $this->getJson(route('recommendations.related', $mainProduct));
-        
+
         $response->assertStatus(200)
-                ->assertJsonStructure([
-                    'relatedProducts' => [
-                        '*' => [
-                            'id',
-                            'name',
-                            'price',
-                            'status',
-                            'stock',
-                            'category',
-                            'tags'
-                        ]
+            ->assertJsonStructure([
+                'relatedProducts' => [
+                    '*' => [
+                        'id',
+                        'name',
+                        'price',
+                        'status',
+                        'stock',
+                        'category',
+                        'tags'
                     ]
-                ]);
+                ]
+            ]);
     }
 
     public function test_track_view_api_requires_authentication()
@@ -364,7 +364,7 @@ class HomePageTest extends TestCase
         $response = $this->postJson(route('recommendations.track'), [
             'product_id' => $product->id
         ]);
-        
+
         $response->assertStatus(401);
     }
 
@@ -379,9 +379,9 @@ class HomePageTest extends TestCase
         $response = $this->actingAs($user)->postJson(route('recommendations.track'), [
             'product_id' => $product->id
         ]);
-        
+
         $response->assertStatus(200)
-                ->assertJson(['message' => 'View tracked successfully']);
+            ->assertJson(['message' => 'View tracked successfully']);
     }
 
     public function test_track_view_api_validates_product_id()
@@ -391,7 +391,7 @@ class HomePageTest extends TestCase
         $response = $this->actingAs($user)->postJson(route('recommendations.track'), [
             'product_id' => 999999 // Non-existent product ID
         ]);
-        
+
         $response->assertStatus(422);
     }
 
@@ -404,7 +404,7 @@ class HomePageTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)->getJson(route('admin.recommendations.ml-only', $product));
-        
+
         $response->assertStatus(403);
     }
 
@@ -417,12 +417,12 @@ class HomePageTest extends TestCase
         ]);
 
         $response = $this->actingAs($admin)->getJson(route('admin.recommendations.ml-only', $product));
-        
+
         $response->assertStatus(200)
-                ->assertJsonStructure([
-                    'mlRecommendations',
-                    'note'
-                ]);
+            ->assertJsonStructure([
+                'mlRecommendations',
+                'note'
+            ]);
     }
 
     public function test_admin_stats_requires_admin_role()
@@ -430,7 +430,7 @@ class HomePageTest extends TestCase
         $user = User::factory()->create(['role' => 'user']);
 
         $response = $this->actingAs($user)->getJson(route('admin.recommendations.stats'));
-        
+
         $response->assertStatus(403);
     }
 
@@ -439,12 +439,12 @@ class HomePageTest extends TestCase
         $admin = User::factory()->create(['role' => 'admin']);
 
         $response = $this->actingAs($admin)->getJson(route('admin.recommendations.stats'));
-        
+
         $response->assertStatus(200)
-                ->assertJsonStructure([
-                    'stats',
-                    'timestamp'
-                ]);
+            ->assertJsonStructure([
+                'stats',
+                'timestamp'
+            ]);
     }
 
     public function test_admin_clear_cache_requires_admin_role()
@@ -452,7 +452,7 @@ class HomePageTest extends TestCase
         $user = User::factory()->create(['role' => 'user']);
 
         $response = $this->actingAs($user)->postJson(route('admin.recommendations.clear-cache'));
-        
+
         $response->assertStatus(403);
     }
 
@@ -461,10 +461,10 @@ class HomePageTest extends TestCase
         $admin = User::factory()->create(['role' => 'admin']);
 
         $response = $this->actingAs($admin)->postJson(route('admin.recommendations.clear-cache'));
-        
+
         $response->assertStatus(200)
-                ->assertJson([
-                    'message' => 'All recommendation caches cleared successfully'
-                ]);
+            ->assertJson([
+                'message' => 'All recommendation caches cleared successfully'
+            ]);
     }
 }

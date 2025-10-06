@@ -38,7 +38,7 @@ class WishlistTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJson(['in_wishlist' => true]);
-        
+
         $this->assertDatabaseHas('wishlists', [
             'user_id' => $user->id,
             'product_id' => $product->id,
@@ -50,7 +50,7 @@ class WishlistTest extends TestCase
         $user = User::factory()->create();
         $category = Category::factory()->create();
         $product = Product::factory()->create(['category_id' => $category->id]);
-        
+
         // Add to wishlist first
         Wishlist::create([
             'user_id' => $user->id,
@@ -63,7 +63,7 @@ class WishlistTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJson(['in_wishlist' => false]);
-        
+
         $this->assertDatabaseMissing('wishlists', [
             'user_id' => $user->id,
             'product_id' => $product->id,
@@ -75,7 +75,7 @@ class WishlistTest extends TestCase
         $user = User::factory()->create();
         $category = Category::factory()->create();
         $product = Product::factory()->create(['category_id' => $category->id]);
-        
+
         // Add to wishlist
         Wishlist::create([
             'user_id' => $user->id,
@@ -109,7 +109,7 @@ class WishlistTest extends TestCase
         // Should handle gracefully (returns that it's already in wishlist)
         $response->assertStatus(200);
         $response->assertJson(['in_wishlist' => true]);
-        
+
         // Should still only have one entry
         $this->assertEquals(1, Wishlist::where('user_id', $user->id)
             ->where('product_id', $product->id)
@@ -128,7 +128,7 @@ class WishlistTest extends TestCase
         Wishlist::create(['user_id' => $user->id, 'product_id' => $product2->id]);
 
         $response = $this->actingAs($user)->get(route('wishlist.index'));
-        
+
         $response->assertStatus(200);
         // The response should contain the products (this may need adjustment based on your view structure)
     }

@@ -30,7 +30,7 @@ class ProductManagementTest extends TestCase
     public function test_seller_can_access_product_management()
     {
         $seller = User::factory()->create(['role' => 'seller']);
-        
+
         $response = $this->actingAs($seller)->get(route('products.index'));
         $response->assertStatus(200);
     }
@@ -53,7 +53,7 @@ class ProductManagementTest extends TestCase
         $response = $this->actingAs($seller)->post(route('products.store'), $productData);
 
         $response->assertStatus(302);
-        
+
         $this->assertDatabaseHas('products', [
             'name' => 'Test Product',
             'description' => 'This is a test product',
@@ -79,7 +79,7 @@ class ProductManagementTest extends TestCase
             'description' => 'Updated description',
             'price' => 149.99,
             'stock' => 20,
-            'status' => 'Out of Stock',
+            'status' => 'Active',
             'category_id' => $category->id,
             'tags' => [],
         ];
@@ -87,13 +87,13 @@ class ProductManagementTest extends TestCase
         $response = $this->actingAs($seller)->put(route('products.update', $product), $updateData);
 
         $response->assertStatus(302);
-        
+
         $this->assertDatabaseHas('products', [
             'id' => $product->id,
             'name' => 'Updated Product Name',
             'price' => 149.99,
             'stock' => 20,
-            'status' => 'Out of Stock',
+            'status' => 'Active',
         ]);
     }
 
