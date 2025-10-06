@@ -22,7 +22,7 @@ type Product = {
     price: number;
     stock: number;
     description?: string;
-    status: 'Active' | 'Inactive' | 'Low Stock';
+    status: 'Active' | 'Inactive' | 'Low Stock' | 'Out of Stock';
 };
 
 interface DeleteProductDialogProps {

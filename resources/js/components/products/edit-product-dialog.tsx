@@ -37,7 +37,7 @@ type Product = {
     stock: number;
     description?: string;
     tags?: Tag[];
-    status: 'Active' | 'Inactive' | 'Low Stock';
+    status: 'Active' | 'Inactive' | 'Low Stock' | 'Out of Stock';
 };
 
 interface EditProductDialogProps {
@@ -61,6 +61,7 @@ export function EditProductDialog({
         price: product.price?.toString() || '',
         stock: product.stock?.toString() || '',
         description: product.description || '',
+        status: product.status || 'Active',
         tags: product.tags?.map((tag) => tag.id) || ([] as string[]),
     });
 
@@ -96,6 +97,7 @@ export function EditProductDialog({
                 price: product.price?.toString() || '',
                 stock: product.stock?.toString() || '',
                 description: product.description || '',
+                status: product.status || 'Active',
                 tags: product.tags?.map((tag) => tag.id) || [],
             });
         }
@@ -161,6 +163,59 @@ export function EditProductDialog({
                         {errors.category_id && (
                             <p className="text-sm text-red-500">
                                 {errors.category_id}
+                            </p>
+                        )}
+                    </div>
+
+                    {/* Status */}
+                    <div className="space-y-2">
+                        <Label htmlFor="status">Status</Label>
+                        <Select
+                            value={data.status}
+                            onValueChange={(val) =>
+                                setData(
+                                    'status',
+                                    val as
+                                        | 'Active'
+                                        | 'Inactive'
+                                        | 'Low Stock'
+                                        | 'Out of Stock',
+                                )
+                            }
+                        >
+                            <SelectTrigger id="status">
+                                <SelectValue placeholder="Select status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="Active">
+                                    <div className="flex items-center gap-2">
+                                        <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                                        Active
+                                    </div>
+                                </SelectItem>
+                                <SelectItem value="Inactive">
+                                    <div className="flex items-center gap-2">
+                                        <div className="h-2 w-2 rounded-full bg-gray-500"></div>
+                                        Inactive
+                                    </div>
+                                </SelectItem>
+                                <SelectItem value="Low Stock">
+                                    <div className="flex items-center gap-2">
+                                        <div className="h-2 w-2 rounded-full bg-yellow-500"></div>
+                                        Low Stock
+                                    </div>
+                                </SelectItem>
+                                <SelectItem value="Out of Stock">
+                                    <div className="flex items-center gap-2">
+                                        <div className="h-2 w-2 rounded-full bg-red-500"></div>
+                                        Out of Stock
+                                    </div>
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
+                        {errors.status && (
+                            <p className="text-sm text-red-500">
+                                {errors.status}
                             </p>
                         )}
                     </div>

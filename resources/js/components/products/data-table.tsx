@@ -1,4 +1,3 @@
-import { Badge } from '@/components/ui/badge';
 import {
     Table,
     TableBody,
@@ -9,6 +8,7 @@ import {
 } from '@/components/ui/table';
 import { DeleteProductDialog } from './delete-product-dialog';
 import { EditProductDialog } from './edit-product-dialog';
+import ProductStatusButton from './product-status-button';
 
 type Category = { id: string; name: string };
 type Tag = { id: string; name: string };
@@ -28,7 +28,7 @@ type Product = {
     stock: number;
     description?: string;
     tags?: Tag[];
-    status: 'Active' | 'Inactive' | 'Low Stock';
+    status: 'Active' | 'Inactive' | 'Low Stock' | 'Out of Stock';
 };
 
 interface DataTableProps {
@@ -70,17 +70,7 @@ export function DataTable({ products, categories, tags }: DataTableProps) {
                                 </TableCell>
                                 <TableCell>{p.stock}</TableCell>
                                 <TableCell>
-                                    <Badge
-                                        variant={
-                                            p.status === 'Active'
-                                                ? 'secondary'
-                                                : p.status === 'Low Stock'
-                                                  ? 'default'
-                                                  : 'destructive'
-                                        }
-                                    >
-                                        {p.status}
-                                    </Badge>
+                                    <ProductStatusButton product={p} />
                                 </TableCell>
                                 <TableCell className="space-x-2 text-right">
                                     <EditProductDialog

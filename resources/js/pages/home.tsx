@@ -1,16 +1,22 @@
 import NavStore from '@/components/nav-store';
 import ProductEditButton from '@/components/products/product-edit-button';
+import ProductStatusButton from '@/components/products/product-status-button';
 import RecentlyViewed from '@/components/recently-viewed';
 import RecommendedProducts from '@/components/recommended-products';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/contexts/cart-context';
+import admin from '@/routes/admin';
+import seller from '@/routes/seller';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import {
     RefreshCcwIcon,
+    Settings,
     ShieldCheckIcon,
     ShoppingBagIcon,
     StarIcon,
+    Store,
+    TrendingUp,
     TruckIcon,
 } from 'lucide-react';
 import * as React from 'react';
@@ -35,13 +41,29 @@ interface PageProps {
     categories: Category[];
     topCategories: Category[];
     recommendedProducts: Product[];
+    tags?: Tag[];
+    auth?: {
+        user?: {
+            name: string;
+            email: string;
+            role?: 'admin' | 'seller' | 'user';
+        };
+    };
     [key: string]: unknown;
 }
 
 export default function Home() {
     const { props } = usePage<PageProps>();
-    const { featuredProducts, topCategories, recommendedProducts } = props;
+    const {
+        featuredProducts,
+        topCategories,
+        recommendedProducts,
+        categories,
+        tags,
+        auth,
+    } = props;
     const { addToCart } = useCart();
+    const user = auth?.user;
 
     const newsletterForm = useForm({
         email: '',
@@ -156,6 +178,61 @@ export default function Home() {
                     </div>
                 </div>
             </div>
+
+            {/* Role-specific Dashboard Quick Access */}
+            {user && (user.role === 'admin' || user.role === 'seller') && (
+                <div className="bg-gradient-to-r from-indigo-600 to-purple-600 py-12">
+                    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                        <div className="text-center">
+                            <h2 className="text-2xl font-bold text-white sm:text-3xl">
+                                {user.role === 'admin'
+                                    ? 'Admin Tools'
+                                    : 'Seller Tools'}
+                            </h2>
+                            <p className="mt-2 text-lg text-indigo-100">
+                                Quick access to your {user.role} dashboard and
+                                tools
+                            </p>
+                            <div className="mt-8 flex flex-wrap justify-center gap-4">
+                                {user.role === 'admin' && (
+                                    <>
+                                        <Link href={admin.dashboard()}>
+                                            <Button
+                                                size="lg"
+                                                className="bg-white text-indigo-600 hover:bg-gray-50"
+                                            >
+                                                <Settings className="mr-2 h-5 w-5" />
+                                                Admin Dashboard
+                                            </Button>
+                                        </Link>
+                                        <Link href={admin.mlRecommendations()}>
+                                            <Button
+                                                size="lg"
+                                                variant="outline"
+                                                className="border-2 border-white bg-transparent text-white hover:bg-white hover:text-indigo-600"
+                                            >
+                                                <TrendingUp className="mr-2 h-5 w-5" />
+                                                ML Recommendations
+                                            </Button>
+                                        </Link>
+                                    </>
+                                )}
+                                {user.role === 'seller' && (
+                                    <Link href={seller.dashboard()}>
+                                        <Button
+                                            size="lg"
+                                            className="bg-white text-indigo-600 hover:bg-gray-50"
+                                        >
+                                            <Store className="mr-2 h-5 w-5" />
+                                            Seller Dashboard
+                                        </Button>
+                                    </Link>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Features Section */}
             <div className="bg-gray-50 py-16 sm:py-24">
@@ -283,20 +360,14 @@ export default function Home() {
                                                 size="icon"
                                                 variant="ghost"
                                                 className="relative z-20 opacity-0 transition-opacity group-hover:opacity-100"
+                                                categories={categories || []}
+                                                tags={tags || []}
                                             />
                                         </div>
-                                        <Badge
-                                            variant={
-                                                product.status === 'Active'
-                                                    ? 'secondary'
-                                                    : product.status ===
-                                                        'Low Stock'
-                                                      ? 'default'
-                                                      : 'destructive'
-                                            }
-                                        >
-                                            {product.status}
-                                        </Badge>
+                                        <ProductStatusButton
+                                            product={product}
+                                            className="relative z-20"
+                                        />
                                     </div>
                                     {product.category && (
                                         <p className="mt-1 text-sm text-gray-500">

@@ -1,3 +1,4 @@
+import { EditProductDialog } from '@/components/products/edit-product-dialog';
 import { Button } from '@/components/ui/button';
 import { usePage } from '@inertiajs/react';
 import { Edit } from 'lucide-react';
@@ -17,9 +18,9 @@ type Product = {
         id: string;
         name: string;
     };
-    price?: number;
-    stock?: number;
-    status?: string;
+    price: number;
+    stock: number;
+    status: 'Active' | 'Inactive' | 'Low Stock' | 'Out of Stock';
     description?: string;
     category?: {
         id: string;
@@ -34,6 +35,8 @@ interface ProductEditButtonProps {
     size?: 'default' | 'sm' | 'lg' | 'icon';
     className?: string;
     showText?: boolean;
+    categories?: { id: string; name: string }[];
+    tags?: { id: string; name: string }[];
 }
 
 export default function ProductEditButton({
@@ -42,12 +45,21 @@ export default function ProductEditButton({
     size = 'sm',
     className = '',
     showText = false,
+    categories = [],
+    tags = [],
 }: ProductEditButtonProps) {
     const { props } = usePage<{
         auth?: { user?: User };
+        categories?: { id: string; name: string }[];
+        tags?: { id: string; name: string }[];
     }>();
 
     const user = props.auth?.user;
+
+    // Use provided categories/tags or fall back to page props
+    const availableCategories =
+        categories.length > 0 ? categories : props.categories || [];
+    const availableTags = tags.length > 0 ? tags : props.tags || [];
 
     // Don't show button if user is not authenticated
     if (!user) {
@@ -64,8 +76,35 @@ export default function ProductEditButton({
         return null;
     }
 
+    // If we have categories and tags available, use the dialog
+    if (availableCategories.length > 0 && availableTags.length > 0) {
+        return (
+            <EditProductDialog
+                product={product}
+                categories={availableCategories}
+                tags={availableTags}
+            >
+                <Button
+                    variant={variant}
+                    size={size}
+                    className={`${className}`}
+                    title={`Edit ${product.name}`}
+                >
+                    {size === 'icon' ? (
+                        <Edit className="h-4 w-4" />
+                    ) : (
+                        <>
+                            <Edit className="h-4 w-4" />
+                            {showText && <span className="ml-2">Edit</span>}
+                        </>
+                    )}
+                </Button>
+            </EditProductDialog>
+        );
+    }
+
+    // Fallback to redirect behavior if categories/tags not available
     const handleEdit = () => {
-        // Redirect to appropriate dashboard with the product ID
         const dashboardUrl =
             user.role === 'admin' ? '/dashboard/admin' : '/dashboard/seller';
         window.location.href = `${dashboardUrl}?edit=${product.id}`;

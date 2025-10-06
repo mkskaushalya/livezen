@@ -2,6 +2,8 @@
 
 import { CartSidebar } from '@/components/cart/cart-sidebar';
 import { useCart } from '@/contexts/cart-context';
+import admin from '@/routes/admin';
+import seller from '@/routes/seller';
 import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react';
 import {
     Bars3Icon,
@@ -25,7 +27,13 @@ export default function Example() {
     const [open, setOpen] = useState(false);
     const { totalItems } = useCart();
     const { props } = usePage<{
-        auth?: { user?: { name: string; email: string } };
+        auth?: {
+            user?: {
+                name: string;
+                email: string;
+                role?: 'admin' | 'seller' | 'user';
+            };
+        };
     }>();
     const user = props.auth?.user;
 
@@ -86,6 +94,26 @@ export default function Example() {
                                             Dashboard
                                         </Link>
                                     </div>
+                                    {user.role === 'admin' && (
+                                        <div className="flow-root">
+                                            <Link
+                                                href={admin.dashboard()}
+                                                className="-m-2 block p-2 font-medium text-indigo-600"
+                                            >
+                                                Admin Dashboard
+                                            </Link>
+                                        </div>
+                                    )}
+                                    {user.role === 'seller' && (
+                                        <div className="flow-root">
+                                            <Link
+                                                href={seller.dashboard()}
+                                                className="-m-2 block p-2 font-medium text-indigo-600"
+                                            >
+                                                Seller Dashboard
+                                            </Link>
+                                        </div>
+                                    )}
                                     <div className="flow-root">
                                         <Link
                                             href="/dashboard/profile"
@@ -204,6 +232,34 @@ export default function Example() {
                                             >
                                                 Dashboard
                                             </Link>
+                                            {user.role === 'admin' && (
+                                                <>
+                                                    <span
+                                                        aria-hidden="true"
+                                                        className="h-6 w-px bg-gray-200"
+                                                    />
+                                                    <Link
+                                                        href={admin.dashboard()}
+                                                        className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
+                                                    >
+                                                        Admin Dashboard
+                                                    </Link>
+                                                </>
+                                            )}
+                                            {user.role === 'seller' && (
+                                                <>
+                                                    <span
+                                                        aria-hidden="true"
+                                                        className="h-6 w-px bg-gray-200"
+                                                    />
+                                                    <Link
+                                                        href={seller.dashboard()}
+                                                        className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
+                                                    >
+                                                        Seller Dashboard
+                                                    </Link>
+                                                </>
+                                            )}
                                             <span
                                                 aria-hidden="true"
                                                 className="h-6 w-px bg-gray-200"
