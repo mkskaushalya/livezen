@@ -34,7 +34,8 @@ class RecommendationService
 
             // Get ML-based recommendations (30% of results)  
             $mlLimit = $limit - $ruleBasedProducts->count();
-            $mlProducts = $this->getMLBasedRelatedProducts($product, $mlLimit, $ruleBasedProducts->pluck('id')->toArray());
+            $excludeIds = array_merge([$product->id], $ruleBasedProducts->pluck('id')->toArray());
+            $mlProducts = $this->getMLBasedRelatedProducts($product, $mlLimit, $excludeIds);
 
             // Combine results with rule-based having higher priority
             $hybridRecommendations = $ruleBasedProducts->merge($mlProducts);
@@ -45,7 +46,9 @@ class RecommendationService
                 'total_count' => $hybridRecommendations->count()
             ]);
 
-            return $hybridRecommendations->take($limit);
+            // Ensure we return an Eloquent Collection
+            $limitedResults = $hybridRecommendations->take($limit);
+            return new Collection($limitedResults->values()->all());
         });
     }
 
@@ -104,7 +107,11 @@ class RecommendationService
             $recommendations = $recommendations->merge($tagProducts);
         }
 
-        return $recommendations->take($limit);
+        // Convert to Eloquent Collection and take the required limit
+        $limitedRecommendations = $recommendations->take($limit);
+        
+        // Ensure we return an Eloquent Collection
+        return new Collection($limitedRecommendations->values()->all());
     }
 
     /**
@@ -113,7 +120,7 @@ class RecommendationService
     private function getMLBasedRelatedProducts(Product $product, int $limit, array $excludeIds = []): Collection
     {
         if ($limit <= 0) {
-            return collect();
+            return new Collection();
         }
 
         try {
@@ -122,7 +129,7 @@ class RecommendationService
 
             if (empty($similarities)) {
                 Log::info("No ML similarities found for product: {$product->id}");
-                return collect();
+                return new Collection();
             }
 
             // Filter out excluded products and get product models
@@ -196,7 +203,9 @@ class RecommendationService
                 'total_count' => $hybridRecommendations->count()
             ]);
 
-            return $hybridRecommendations->take($limit);
+            // Ensure we return an Eloquent Collection
+            $limitedResults = $hybridRecommendations->take($limit);
+            return new Collection($limitedResults->values()->all());
         });
     }
 
@@ -259,7 +268,9 @@ class RecommendationService
             $recommendations = $recommendations->merge($tagRecommendations);
         }
 
-        return $recommendations->take($limit);
+        // Ensure we return an Eloquent Collection
+        $limitedResults = $recommendations->take($limit);
+        return new Collection($limitedResults->values()->all());
     }
 
     /**
@@ -268,7 +279,7 @@ class RecommendationService
     private function getMLBasedPersonalizedProducts(User $user, array $viewedProductIds, int $limit, array $excludeIds = []): Collection
     {
         if ($limit <= 0) {
-            return collect();
+            return new Collection();
         }
 
         try {
@@ -315,7 +326,9 @@ class RecommendationService
                 })->values();
             }
 
-            return $mlRecommendations->take($limit);
+            // Ensure we return an Eloquent Collection
+            $limitedResults = $mlRecommendations->take($limit);
+            return new Collection($limitedResults->values()->all());
         } catch (\Exception $e) {
             Log::warning("ML personalized recommendations failed", [
                 'error' => $e->getMessage(),
@@ -457,7 +470,7 @@ class RecommendationService
             })->values();
         } catch (\Exception $e) {
             Log::error("ML-only recommendations failed", ['error' => $e->getMessage()]);
-            return collect();
+            return new Collection();
         }
     }
 }

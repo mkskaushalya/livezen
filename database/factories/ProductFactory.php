@@ -18,17 +18,14 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
-        $seller = User::where('role', 'seller')->inRandomOrder()->first();
-        $category = Category::inRandomOrder()->first();
-
         return [
-            'seller_id' => $seller?->id ?? 1,
-            'category_id' => $category?->id,
+            'seller_id' => User::factory(),
+            'category_id' => Category::factory(),
             'name' => $this->faker->words(3, true),
             'description' => $this->faker->sentence(10),
-            'price' => $this->faker->randomFloat(2, 500, 50000),
+            'price' => $this->faker->randomFloat(2, 10, 1000),
             'image' => 'https://via.placeholder.com/300',
-            'stock' => $this->faker->numberBetween(0, 100),
+            'stock' => $this->faker->numberBetween(1, 100),
             'status' => $this->faker->randomElement(['Active', 'Low Stock', 'Out of Stock']),
         ];
     }
