@@ -558,6 +558,425 @@ php artisan generate:embeddings --fresh
 
 ---
 
+## 🧪 Testing
+
+### Test Suite Overview
+
+LiveZen includes a comprehensive test suite covering all major functionality areas. The tests are built using **PHPUnit** for backend testing with Laravel's testing utilities, ensuring reliability and maintainability.
+
+#### Test Coverage Areas
+
+**🔐 Authentication & User Management**
+
+- User registration and validation
+- Login/logout functionality
+- Password reset workflows
+- Two-factor authentication
+- User profile management
+- Role-based access control
+
+**📦 Product Management**
+
+- CRUD operations for products
+- Product search and filtering
+- Category and tag management
+- Image upload and validation
+- Stock management
+- Product status updates
+
+**🛒 E-commerce Features**
+
+- Shopping cart operations
+- Wishlist functionality
+- Order placement and management
+- Payment processing workflows
+
+**🤖 AI/ML Recommendation System**
+
+- Embedding generation and caching
+- Similarity calculations
+- Hybrid recommendation logic
+- Performance optimization
+- Admin ML management features
+
+**🔒 Security & Authorization**
+
+- Role-based permissions (admin, seller, user)
+- Product ownership validation
+- API endpoint security
+- Input validation and sanitization
+
+### Test Structure
+
+```
+tests/
+├── Feature/                    # Integration & feature tests
+│   ├── AuthenticationTest.php   # User authentication flows
+│   ├── HomePageTest.php         # Homepage functionality
+│   ├── ProductTest.php          # Product CRUD operations
+│   ├── ProductManagementTest.php # Advanced product features
+│   ├── UserManagementTest.php   # User administration
+│   └── WishlistTest.php         # Wishlist functionality
+├── Unit/                       # Unit tests
+│   └── ExampleTest.php         # Basic unit test examples
+└── TestCase.php                # Base test class with utilities
+```
+
+### Running Tests
+
+#### Prerequisites
+
+Ensure your testing environment is properly configured:
+
+```bash
+# Copy test environment file
+cp .env.testing.example .env.testing
+
+# Configure test database (uses SQLite for speed)
+# .env.testing should contain:
+# DB_CONNECTION=sqlite
+# DB_DATABASE=:memory:
+```
+
+#### Running All Tests
+
+```bash
+# Run complete test suite
+php artisan test
+
+# Run tests with verbose output
+php artisan test --verbose
+
+# Run tests with coverage report (requires Xdebug)
+php artisan test --coverage
+```
+
+#### Running Specific Test Categories
+
+```bash
+# Run only feature tests
+php artisan test tests/Feature
+
+# Run only unit tests
+php artisan test tests/Unit
+
+# Run specific test file
+php artisan test tests/Feature/ProductTest.php
+
+# Run specific test method
+php artisan test --filter test_admin_can_create_product
+```
+
+#### Running Tests with Filters
+
+```bash
+# Run tests matching pattern
+php artisan test --filter="product"
+
+# Run tests excluding slow tests
+php artisan test --exclude-group=slow
+
+# Run only authentication-related tests
+php artisan test --group=auth
+```
+
+### Key Test Cases
+
+#### Authentication Tests (`tests/Feature/AuthenticationTest.php`)
+
+```php
+✅ test_user_can_register_with_valid_data()
+✅ test_user_cannot_register_with_invalid_data()
+✅ test_user_can_login_with_correct_credentials()
+✅ test_user_cannot_login_with_incorrect_credentials()
+✅ test_user_can_logout()
+✅ test_password_reset_functionality()
+✅ test_two_factor_authentication_flow()
+```
+
+#### Product Management Tests (`tests/Feature/ProductTest.php`)
+
+```php
+✅ test_user_can_view_products_page()
+✅ test_seller_can_create_product()
+✅ test_admin_can_create_product()
+✅ test_product_requires_authentication_to_create()
+✅ test_product_creation_validation()
+✅ test_seller_can_edit_own_product()
+✅ test_seller_cannot_edit_others_product()
+✅ test_admin_can_edit_any_product()
+✅ test_product_deletion_permissions()
+✅ test_product_search_functionality()
+```
+
+#### E-commerce Tests (`tests/Feature/WishlistTest.php`)
+
+```php
+✅ test_user_can_add_product_to_wishlist()
+✅ test_user_can_remove_product_from_wishlist()
+✅ test_user_can_view_wishlist()
+✅ test_wishlist_requires_authentication()
+✅ test_wishlist_toggle_functionality()
+```
+
+#### ML Recommendation Tests (`tests/Feature/HomePageTest.php`)
+
+```php
+✅ test_homepage_displays_recommended_products()
+✅ test_admin_can_access_ml_dashboard()
+✅ test_admin_can_view_ml_statistics()
+✅ test_admin_can_clear_ml_cache()
+✅ test_ml_recommendations_require_admin_role()
+✅ test_embedding_generation_process()
+```
+
+### Test Data & Factories
+
+LiveZen uses **Model Factories** for generating consistent test data:
+
+```php
+// UserFactory - Creates test users with different roles
+UserFactory::create(['role' => 'admin'])
+UserFactory::create(['role' => 'seller'])
+UserFactory::create(['role' => 'user'])
+
+// ProductFactory - Generates test products
+ProductFactory::create([
+    'name' => 'Test Product',
+    'price' => 99.99,
+    'stock' => 10,
+    'status' => 'Active'
+])
+
+// CategoryFactory - Creates product categories
+CategoryFactory::create(['name' => 'Electronics'])
+
+// TagFactory - Generates product tags
+TagFactory::create(['name' => 'smartphone'])
+```
+
+### Test Environment Configuration
+
+#### Database Configuration
+
+For fast test execution, tests use **SQLite in-memory database**:
+
+```env
+# .env.testing
+DB_CONNECTION=sqlite
+DB_DATABASE=:memory:
+CACHE_DRIVER=array
+QUEUE_CONNECTION=sync
+SESSION_DRIVER=array
+```
+
+#### Performance Optimization
+
+Tests are optimized for speed:
+
+- **In-memory SQLite**: No disk I/O for database operations
+- **Array cache driver**: No external cache dependencies
+- **Sync queue**: Immediate job processing
+- **Array session**: No session persistence
+
+### Continuous Integration
+
+#### GitHub Actions Workflow
+
+The project includes automated testing on every push:
+
+```yaml
+# .github/workflows/tests.yml
+name: Tests
+on: [push, pull_request]
+jobs:
+    tests:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 8.2
+            - name: Install dependencies
+              run: composer install
+            - name: Run tests
+              run: php artisan test
+```
+
+### Writing New Tests
+
+#### Feature Test Example
+
+```php
+<?php
+
+namespace Tests\Feature;
+
+use App\Models\User;
+use App\Models\Product;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+class ProductFeatureTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_seller_can_create_product()
+    {
+        $seller = User::factory()->create(['role' => 'seller']);
+
+        $productData = [
+            'name' => 'New Product',
+            'price' => 99.99,
+            'stock' => 10,
+            'description' => 'Test product description'
+        ];
+
+        $response = $this->actingAs($seller)
+            ->post('/products', $productData);
+
+        $response->assertStatus(201);
+        $this->assertDatabaseHas('products', [
+            'name' => 'New Product',
+            'seller_id' => $seller->id
+        ]);
+    }
+}
+```
+
+#### Unit Test Example
+
+```php
+<?php
+
+namespace Tests\Unit;
+
+use App\Services\RecommendationService;
+use App\Models\Product;
+use Tests\TestCase;
+
+class RecommendationServiceTest extends TestCase
+{
+    public function test_can_calculate_product_similarity()
+    {
+        $service = new RecommendationService();
+        $product1 = Product::factory()->create();
+        $product2 = Product::factory()->create();
+
+        $similarity = $service->calculateSimilarity($product1, $product2);
+
+        $this->assertIsFloat($similarity);
+        $this->assertGreaterThanOrEqual(0, $similarity);
+        $this->assertLessThanOrEqual(1, $similarity);
+    }
+}
+```
+
+### Test Best Practices
+
+#### 1. **Use Descriptive Test Names**
+
+```php
+// ✅ Good
+public function test_admin_can_delete_any_product()
+
+// ❌ Bad
+public function test_delete_product()
+```
+
+#### 2. **Follow AAA Pattern**
+
+```php
+public function test_example()
+{
+    // Arrange - Set up test data
+    $user = User::factory()->create();
+
+    // Act - Perform the action
+    $response = $this->actingAs($user)->get('/dashboard');
+
+    // Assert - Verify the result
+    $response->assertOk();
+}
+```
+
+#### 3. **Use Database Transactions**
+
+```php
+class ProductTest extends TestCase
+{
+    use RefreshDatabase; // Resets database after each test
+}
+```
+
+#### 4. **Mock External Services**
+
+```php
+public function test_payment_processing()
+{
+    Mail::fake(); // Mock email sending
+    Queue::fake(); // Mock job queuing
+
+    // Your test code here
+
+    Mail::assertSent(PaymentConfirmation::class);
+}
+```
+
+### Running Tests in Development
+
+#### Pre-commit Testing
+
+Add to your development workflow:
+
+```bash
+# Before committing changes
+composer test
+
+# Run specific tests related to your changes
+php artisan test tests/Feature/ProductTest.php
+
+# Quick smoke test
+php artisan test --filter="basic"
+```
+
+#### IDE Integration
+
+Most IDEs support PHPUnit integration:
+
+- **PHPStorm**: Built-in PHPUnit runner
+- **VS Code**: PHP Unit extension
+- **Vim/Neovim**: vim-test plugin
+
+### Test Debugging
+
+#### Common Debugging Techniques
+
+```bash
+# Run single test with detailed output
+php artisan test tests/Feature/ProductTest.php --verbose
+
+# Stop on first failure
+php artisan test --stop-on-failure
+
+# Run with debugging output
+php artisan test --debug
+```
+
+#### Database Inspection During Tests
+
+```php
+public function test_example()
+{
+    // Pause test execution to inspect database
+    $this->withoutExceptionHandling();
+    dd(Product::all()); // Dump and die to see current state
+}
+```
+
+---
+
 ## 📚 References
 
 ### Documentation & Official Resources
