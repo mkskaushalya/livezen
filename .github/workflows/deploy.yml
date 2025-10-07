@@ -19,18 +19,6 @@ jobs:
           tools: composer:v2
           coverage: xdebug
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-
-      - name: Install Node Dependencies
-        run: npm ci
-
-      - name: Build Assets
-        run: npm run build
-
       - name: Install Dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
@@ -42,6 +30,39 @@ jobs:
 
       - name: Directory Permissions
         run: chmod -R 775 storage
+
+      - name: Replace .env values for build
+        run: |
+          sed -i "/^#\? *APP_ENV=/c\APP_ENV=production" .env
+          sed -i "/^#\? *APP_DEBUG=/c\APP_DEBUG=false" .env
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install Node Dependencies
+        run: npm ci
+
+      - name: Clear Laravel Cache
+        run: |
+          php artisan config:clear
+          php artisan cache:clear
+          php artisan route:clear
+          php artisan view:clear
+
+      - name: Build Assets
+        run: |
+          echo "Building assets with Vite..."
+          npm run build
+          echo "Build completed successfully"
+
+      - name: Verify Build Artifacts
+        run: |
+          echo "Checking if build artifacts exist..."
+          ls -la public/build/
+          echo "Build artifacts verified"
 
       - name: Setup Database
         run: php artisan migrate --env=production --no-interaction --force
