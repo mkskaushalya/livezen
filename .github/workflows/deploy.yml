@@ -31,10 +31,18 @@ jobs:
       - name: Directory Permissions
         run: chmod -R 775 storage
 
+      - name: Create Database Directory
+        run: mkdir -p database
+
+      - name: Create SQLite Database
+        run: touch database/database.sqlite
+
       - name: Replace .env values for build
         run: |
           sed -i "/^#\? *APP_ENV=/c\APP_ENV=production" .env
           sed -i "/^#\? *APP_DEBUG=/c\APP_DEBUG=false" .env
+          sed -i "/^#\? *CACHE_STORE=/c\CACHE_STORE=file" .env
+          sed -i "/^#\? *SESSION_DRIVER=/c\SESSION_DRIVER=file" .env
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -45,12 +53,14 @@ jobs:
       - name: Install Node Dependencies
         run: npm ci
 
-      - name: Clear Laravel Cache
+      - name: Clear Laravel Cache (safe)
         run: |
           php artisan config:clear
-          php artisan cache:clear
           php artisan route:clear
           php artisan view:clear
+
+      - name: Setup Database
+        run: php artisan migrate --env=production --no-interaction --force
 
       - name: Build Assets
         run: |
@@ -63,9 +73,6 @@ jobs:
           echo "Checking if build artifacts exist..."
           ls -la public/build/
           echo "Build artifacts verified"
-
-      - name: Setup Database
-        run: php artisan migrate --env=production --no-interaction --force
 
       - name: Clear Caches
         run: php artisan optimize:clear
@@ -85,6 +92,9 @@ jobs:
           sed -i "s/^# DB_DATABASE=.*/DB_DATABASE=${{ secrets.DB_DATABASE }}/" .env
           sed -i "s/^# DB_USERNAME=.*/DB_USERNAME=${{ secrets.DB_USERNAME }}/" .env
           sed -i "s/^# DB_PASSWORD=.*/DB_PASSWORD=${{ secrets.DB_PASSWORD }}/" .env
+
+          sed -i "/^#\? *CACHE_STORE=/c\CACHE_STORE=database" .env
+          sed -i "/^#\? *SESSION_DRIVER=/c\SESSION_DRIVER=database" .env
 
       - name: Copy Environment File
         run: cp .env .env.production
