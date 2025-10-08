@@ -1,6 +1,12 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteRule ^(.*)$ public/$1 [L]
+
+    # Handle requests to the public directory
+    RewriteCond %{REQUEST_URI} !^/public/
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ public/$1 [L]
+
+    # Handle direct access to public directory
+    RewriteRule ^public/(.*)$ public/$1 [L]
 </IfModule>
