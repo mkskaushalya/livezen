@@ -37,5 +37,17 @@ class UserSeeder extends Seeder
             'role' => 'seller',
             'email_verified_at' => now(),
         ]);
+
+        //regular user
+        User::create([
+            'name' => 'Regular User',
+            'username' => 'user',
+            'email' => 'user@livezen.test',
+            'phone' => '0123456789',
+            'address' => '123 User St, User City',
+            'password' => Hash::make('12345678'),
+            'role' => 'user',
+            'email_verified_at' => now(),
+        ]);
     }
 }

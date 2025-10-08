@@ -4,6 +4,36 @@ This is an advanced **E-commerce Product Recommender System** developed for **Li
 
 ---
 
+## 🌐 Live Demo
+
+**Demo Site**: [https://livezen.tute.lk/](https://livezen.tute.lk/)
+
+### Demo Account Credentials
+
+You can explore the application using these pre-configured demo accounts:
+
+#### 👤 Regular User Account
+
+- **Email**: `user@livezen.test`
+- **Password**: `12345678`
+- **Features**: Browse products, add to wishlist, view recommendations, place orders
+
+#### 🛍️ Seller Account
+
+- **Email**: `seller@livezen.test`
+- **Password**: `12345678`
+- **Features**: All user features + manage own products, view sales dashboard
+
+#### 👨‍💼 Admin Account
+
+- **Email**: `admin@livezen.test`
+- **Password**: `12345678`
+- **Features**: Full system access including user management, ML system monitoring, and comprehensive admin dashboard
+
+> **Note**: The demo site is reset periodically to maintain a clean environment for testing. All demo accounts are pre-loaded with sample data for demonstration purposes.
+
+---
+
 ## 🚀 Features
 
 ### Core Features
