@@ -158,11 +158,11 @@ export default function Example() {
                             <a href="#" className="-m-2 flex items-center p-2">
                                 <img
                                     alt=""
-                                    src="https://tailwindcss.com/plus-assets/img/flags/flag-canada.svg"
+                                    src="/sl-flag.svg"
                                     className="block h-auto w-5 shrink-0"
                                 />
                                 <span className="ml-3 block text-base font-medium text-gray-900">
-                                    CAD
+                                    LKR
                                 </span>
                                 <span className="sr-only">
                                     , change currency
