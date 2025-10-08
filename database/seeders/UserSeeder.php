@@ -43,7 +43,7 @@ class UserSeeder extends Seeder
             'name' => 'Regular User',
             'username' => 'user',
             'email' => 'user@livezen.test',
-            'phone' => '0123456789',
+            'phone' => '0723456189',
             'address' => '123 User St, User City',
             'password' => Hash::make('12345678'),
             'role' => 'user',
