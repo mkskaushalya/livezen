@@ -105,15 +105,8 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: /
+          server-dir: /public/build/
+          local-dir: public/build/
           exclude: |
-            package-lock.json
-            package.json
-            readme.md
-            webpack.mix.js
-            **/.github
-            **/.github/**
-            **/.git/**
-            **/.git/**
-            **/.tests/**/*
-            **/node_modules/**
+            **/*
+            
