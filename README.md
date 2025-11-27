@@ -1,7 +1,7 @@
 # LiveZen – E-commerce Product Recommender System
 
 This is an advanced **E-commerce Product Recommender System** developed for **LiveZen Technologies (Pvt) Ltd**, featuring sophisticated **CRUD operations**, **hybrid AI/ML recommendations**, **user authentication**, and comprehensive **admin management capabilities**.
-
+ 
 ---
 
 ## 🌐 Live Demo
