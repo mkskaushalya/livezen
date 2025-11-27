@@ -1,6 +1,7 @@
 'use client';
 
 import { CartSidebar } from '@/components/cart/cart-sidebar';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { useCart } from '@/contexts/cart-context';
 import admin from '@/routes/admin';
 import seller from '@/routes/seller';
@@ -23,7 +24,7 @@ const navigation = {
     ],
 };
 
-export default function Example() {
+export default function StoreHeaderLayout() {
     const [open, setOpen] = useState(false);
     const { totalItems } = useCart();
     const { props } = usePage<{
@@ -353,6 +354,16 @@ export default function Example() {
                                             </span>
                                         </button>
                                     </CartSidebar>
+                                </div>
+
+                                {/* theme toggle */}
+                                <div className="flex lg:ml-4">
+                                    <a
+                                        href="#"
+                                        className="p-2 text-gray-400 hover:text-gray-500"
+                                    >
+                                        <ThemeToggle />
+                                    </a>
                                 </div>
                             </div>
                         </div>
